@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>HUSTLE YEAR</title>
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%230a0a0c' width='512' height='512' rx='90'/><text x='256' y='340' font-size='280' text-anchor='middle' fill='%23f97316'>🎯</text></svg>">
+    <meta name="apple-mobile-web-app-title" content="HUSTLE">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --bg-primary: #0a0a0c;
+            --bg-secondary: #111114;
+            --bg-elevated: #18181c;
+            --bg-card: rgba(24, 24, 28, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.02);
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-default: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent: #f97316;
+            --accent-light: #fb923c;
+            --accent-bright: #fdba74;
+            --accent-dim: rgba(249, 115, 22, 0.12);
+            --accent-glow: rgba(249, 115, 22, 0.4);
+            --amber: #fbbf24;
+            --amber-dim: rgba(251, 191, 36, 0.12);
+            --emerald: #10b981;
+            --emerald-dim: rgba(16, 185, 129, 0.12);
+            --rose: #f43f5e;
+            --rose-dim: rgba(244, 63, 94, 0.12);
+            --violet: #8b5cf6;
+            --violet-dim: rgba(139, 92, 246, 0.12);
+            --cyan: #06b6d4;
+            --cyan-dim: rgba(6, 182, 212, 0.12);
+            --gradient-fire: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(239, 68, 68, 0.08) 100%);
+            --gradient-ocean: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(59, 130, 246, 0.08) 100%);
+            --gradient-forest: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(34, 197, 94, 0.08) 100%);
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        html, body { height: 100%; font-family: 'Outfit', sans-serif; background: var(--bg-primary); color: var(--text-primary); overflow: hidden; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        .app { height: 100%; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; position: relative; background: var(--bg-primary); overflow: hidden; }
+        .parallax-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 0; will-change: transform; }
+        .ambient-glow { position: absolute; top: -150px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(249, 115, 22, 0.2) 30%, transparent 70%); opacity: 0.8; filter: blur(80px); animation: ambientFloat 10s ease-in-out infinite; will-change: transform, opacity; }
+        /* FIXED: Removed purple glow */
+        .ambient-glow-2 { display: none; }
+        @keyframes ambientFloat { 0%, 100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 0.6; } 33% { transform: translateX(-45%) translateY(-20px) scale(1.05); opacity: 0.8; } 66% { transform: translateX(-55%) translateY(10px) scale(0.98); opacity: 0.7; } }
+        .header { padding: 16px 20px; background: transparent; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 10; animation: slideDown 0.6s var(--ease-out) forwards; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, var(--accent) 0%, var(--amber) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoShine 3s ease-in-out infinite; }
+        @keyframes logoShine { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.2); } }
+        .week-badge { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); font-size: 13px; font-weight: 500; color: var(--text-secondary); transition: all 0.3s var(--ease-spring); }
+        .week-badge:active { transform: scale(0.95); }
+        .week-num { color: var(--accent); font-weight: 700; }
+        .main { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 0 20px 140px; -webkit-overflow-scrolling: touch; position: relative; z-index: 1; scroll-behavior: smooth; }
+        .page-container { animation: pageSlideIn 0.5s var(--ease-out) forwards; }
+        @keyframes pageSlideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        .stagger-item { opacity: 0; transform: translateY(30px); animation: staggerIn 0.6s var(--ease-out) forwards; }
+        @keyframes staggerIn { to { opacity: 1; transform: translateY(0); } }
+        .hero-progress { position: relative; padding: 20px 0; text-align: center; }
+        .progress-ring-container { position: relative; width: 170px; height: 170px; margin: 0 auto 16px; animation: ringFloat 4s ease-in-out infinite; }
+        @keyframes ringFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .progress-ring-glow { position: absolute; inset: -40px; border-radius: 50%; background: radial-gradient(circle, var(--accent-glow) 0%, rgba(249, 115, 22, 0.1) 50%, transparent 70%); opacity: 0.7; filter: blur(30px); animation: pulseGlow 3s ease-in-out infinite; }
+        @keyframes pulseGlow { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.15); } }
+        .progress-ring { transform: rotate(-90deg); width: 170px; height: 170px; position: relative; z-index: 1; }
+        .progress-ring-bg { fill: none; stroke: var(--bg-elevated); stroke-width: 12; }
+        .progress-ring-fill { fill: none; stroke: url(#progressGradient); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 471; stroke-dashoffset: 471; transition: stroke-dashoffset 1.5s var(--ease-out); filter: drop-shadow(0 0 20px var(--accent-glow)); }
+        .progress-ring-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 2; }
+        .progress-ring-value { font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+        .progress-ring-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .bento-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 20px; position: relative; overflow: hidden; backdrop-filter: blur(10px); transition: all 0.4s var(--ease-spring); cursor: pointer; }
+        .bento-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 80px; background: var(--card-gradient, var(--gradient-fire)); opacity: 0.6; filter: blur(30px); transition: opacity 0.3s, transform 0.3s; }
+        .bento-card:hover { transform: translateY(-4px) scale(1.02); border-color: var(--border-default); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .bento-card:hover::before { opacity: 0.9; transform: scale(1.1); }
+        .bento-card:active { transform: scale(0.97); transition: transform 0.1s var(--ease-out); }
+        .bento-icon { font-size: 28px; margin-bottom: 12px; position: relative; z-index: 1; transition: transform 0.3s var(--ease-spring); }
+        .bento-card:hover .bento-icon { transform: scale(1.2) rotate(-5deg); }
+        .bento-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; color: var(--value-color, var(--accent)); position: relative; z-index: 1; }
+        .bento-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; position: relative; z-index: 1; }
+        .weekly-chart-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 24px; position: relative; overflow: hidden; backdrop-filter: blur(10px); transition: all 0.3s var(--ease-out); }
+        .weekly-chart-card:hover { border-color: var(--border-default); }
+        .weekly-chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .weekly-chart-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .weekly-chart-value { font-size: 40px; font-weight: 800; letter-spacing: -1px; }
+        .weekly-chart-change { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; background: var(--emerald-dim); border-radius: var(--radius-full); font-size: 12px; font-weight: 600; color: var(--emerald); animation: badgePop 0.5s var(--ease-spring); }
+        @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+        .trend-chart { height: 140px; margin-bottom: 8px; }
+        .bar-chart { display: flex; justify-content: space-around; align-items: flex-end; height: 120px; gap: 8px; padding: 10px 0; }
+        .bar-column { flex: 1; max-width: 60px; display: flex; flex-direction: column; align-items: center; gap: 8px; animation: barSlideUp 0.5s var(--ease-out) backwards; }
+        @keyframes barSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .bar-value { font-size: 12px; font-weight: 700; color: var(--text-secondary); min-height: 18px; }
+        .bar-track { width: 100%; height: 80px; background: var(--bg-elevated); border-radius: 8px; display: flex; align-items: flex-end; overflow: hidden; position: relative; }
+        .bar-fill { width: 100%; background: linear-gradient(180deg, var(--accent) 0%, var(--amber) 100%); border-radius: 8px; transition: height 1s var(--ease-out); position: relative; min-height: 4px; }
+        .bar-fill.current { background: linear-gradient(180deg, var(--accent-light) 0%, var(--accent) 100%); box-shadow: 0 0 20px var(--accent-glow); animation: barPulse 2s ease-in-out infinite; }
+        @keyframes barPulse { 0%, 100% { box-shadow: 0 0 15px var(--accent-glow); } 50% { box-shadow: 0 0 25px var(--accent-glow); } }
+        .bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%); border-radius: 8px 8px 0 0; }
+        .bar-label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .bar-column:last-child .bar-label { color: var(--accent); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; margin-top: 8px; }
+        .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; }
+        .goals-list { display: flex; flex-direction: column; gap: 14px; }
+        .goal-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 20px; cursor: pointer; position: relative; overflow: hidden; backdrop-filter: blur(10px); transition: all 0.4s var(--ease-spring); touch-action: pan-y pinch-zoom; will-change: transform; }
+        .goal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 120px; background: var(--card-gradient, var(--gradient-fire)); opacity: 0.5; filter: blur(40px); transition: all 0.4s var(--ease-out); }
+        .goal-card:hover { border-color: var(--border-default); transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .goal-card:hover::before { opacity: 0.8; transform: scale(1.1); }
+        .goal-card:active { transform: scale(0.98); transition: transform 0.1s; }
+        .goal-card.gradient-fire { --card-gradient: var(--gradient-fire); }
+        .goal-card.gradient-ocean { --card-gradient: var(--gradient-ocean); }
+        .goal-card.gradient-forest { --card-gradient: var(--gradient-forest); }
+        .goal-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; position: relative; z-index: 1; }
+        .goal-icon { font-size: 40px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); transition: transform 0.4s var(--ease-spring); }
+        .goal-card:hover .goal-icon { transform: scale(1.15) rotate(-8deg); }
+        .goal-info { flex: 1; }
+        .goal-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
+        .goal-subtitle { font-size: 13px; color: var(--text-muted); }
+        .mini-ring-container { width: 58px; height: 58px; position: relative; flex-shrink: 0; transition: transform 0.3s var(--ease-spring); }
+        .goal-card:hover .mini-ring-container { transform: scale(1.1); }
+        .mini-ring { transform: rotate(-90deg); width: 58px; height: 58px; }
+        .mini-ring-bg { fill: none; stroke: var(--bg-primary); stroke-width: 5; }
+        .mini-ring-fill { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 157; stroke-dashoffset: 157; transition: stroke-dashoffset 1s var(--ease-out); }
+        .mini-ring-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; font-weight: 700; color: var(--accent); }
+        .goal-tasks { display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1; }
+        .task-tag { padding: 8px 14px; background: var(--bg-primary); border-radius: var(--radius-full); font-size: 12px; font-weight: 500; color: var(--text-secondary); transition: all 0.2s var(--ease-spring); }
+        .task-tag:hover { background: var(--accent-dim); color: var(--accent); transform: scale(1.05); }
+        .empty-state { text-align: center; padding: 60px 30px; }
+        .empty-icon { width: 110px; height: 110px; margin: 0 auto 24px; background: var(--accent-dim); border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; font-size: 52px; animation: emptyFloat 3s ease-in-out infinite; position: relative; }
+        .empty-icon::after { content: ''; position: absolute; inset: -20px; border-radius: var(--radius-xl); background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); opacity: 0.5; filter: blur(25px); z-index: -1; animation: emptyGlow 3s ease-in-out infinite; }
+        @keyframes emptyFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
+        @keyframes emptyGlow { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
+        .empty-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .empty-text { font-size: 14px; color: var(--text-muted); max-width: 280px; margin: 0 auto; }
+        .sprint-info { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 20px; backdrop-filter: blur(10px); transition: all 0.3s var(--ease-out); }
+        .sprint-info:hover { border-color: var(--border-default); }
+        .sprint-dates { display: flex; justify-content: space-between; align-items: center; }
+        .sprint-date { text-align: center; }
+        .sprint-date-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .sprint-date-value { font-size: 18px; font-weight: 700; color: var(--accent); }
+        .sprint-arrow { color: var(--text-muted); animation: arrowPulse 2s ease-in-out infinite; }
+        @keyframes arrowPulse { 0%, 100% { transform: translateX(0); opacity: 0.5; } 50% { transform: translateX(5px); opacity: 1; } }
+        
+        /* === QUICK ACTIONS === */
+        .quick-actions-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            margin-bottom: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s var(--ease-out);
+        }
+        .quick-actions-card:hover { border-color: var(--border-default); }
+        .quick-actions-card.empty-quick { padding: 0; }
+        .quick-actions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, transparent 100%);
+        }
+        .quick-actions-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quick-actions-icon { font-size: 18px; }
+        .quick-actions-counter {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            transition: all 0.3s var(--ease-spring);
+        }
+        .quick-actions-counter.complete {
+            background: var(--emerald-dim);
+            color: var(--emerald);
+            animation: counterPop 0.5s var(--ease-spring);
+        }
+        @keyframes counterPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .quick-actions-list { padding: 8px 0; }
+        .quick-action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-out);
+            position: relative;
+        }
+        .quick-action-item:hover { background: var(--bg-glass); }
+        .quick-action-item:active { transform: scale(0.98); }
+        .quick-action-item.done { opacity: 0.5; }
+        .quick-action-item.done .quick-action-name { text-decoration: line-through; color: var(--text-muted); }
+        .quick-action-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid var(--border-default);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s var(--ease-spring);
+            background: transparent;
+        }
+        .quick-action-item.done .quick-action-check {
+            background: var(--emerald);
+            border-color: var(--emerald);
+        }
+        .quick-action-check svg { width: 14px; height: 14px; color: white; }
+        .quick-action-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .quick-action-icon { font-size: 18px; flex-shrink: 0; }
+        .quick-action-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .quick-action-freq {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-elevated);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+        }
+        /* Swipe hint animation */
+        .quick-action-item::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .quick-action-item:not(.done):hover::after { opacity: 1; }
+        
+        /* Desktop: Better quick actions */
+        @media (min-width: 1024px) {
+            .quick-actions-card { margin-bottom: 28px; }
+            .quick-action-item { padding: 16px 24px; }
+            .quick-action-item:hover { padding-left: 28px; }
+            .quick-action-name { font-size: 15px; }
+        }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; }
+        .status-badge.active { background: var(--emerald-dim); color: var(--emerald); }
+        .status-badge.expired { background: var(--amber-dim); color: var(--amber); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: statusPulse 2s ease-in-out infinite; }
+        @keyframes statusPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; padding: 12px 16px calc(12px + var(--safe-bottom)); background: linear-gradient(to top, var(--bg-primary) 70%, transparent); z-index: 100; animation: navSlideUp 0.6s var(--ease-out) forwards; }
+        @keyframes navSlideUp { from { transform: translateX(-50%) translateY(100%); } to { transform: translateX(-50%) translateY(0); } }
+        .nav-container { display: flex; justify-content: space-around; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 6px; backdrop-filter: blur(20px); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 14px; border-radius: var(--radius-lg); background: none; border: none; color: var(--text-muted); font-size: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s var(--ease-spring); position: relative; }
+        .nav-item::before { content: ''; position: absolute; inset: 0; background: var(--accent-dim); border-radius: var(--radius-lg); opacity: 0; transform: scale(0.8); transition: all 0.3s var(--ease-spring); }
+        .nav-item.active { color: var(--accent); }
+        .nav-item.active::before { opacity: 1; transform: scale(1); }
+        .nav-item:active { transform: scale(0.9); }
+        .nav-item svg { width: 22px; height: 22px; position: relative; z-index: 1; transition: transform 0.3s var(--ease-spring); }
+        .nav-item.active svg { transform: scale(1.1); }
+        .nav-item span { position: relative; z-index: 1; }
+        .fab { position: fixed; right: 20px; bottom: calc(100px + var(--safe-bottom)); width: 62px; height: 62px; border-radius: var(--radius-full); background: linear-gradient(135deg, var(--accent) 0%, var(--amber) 100%); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.3); z-index: 101; transition: all 0.3s var(--ease-spring); animation: fabBounceIn 0.6s var(--ease-spring) 0.3s backwards; }
+        @keyframes fabBounceIn { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 60% { transform: scale(1.2) rotate(10deg); } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+        .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 12px 40px var(--accent-glow); }
+        .fab:active { transform: scale(0.9) rotate(90deg); }
+        .fab svg { width: 26px; height: 26px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); display: flex; align-items: flex-end; justify-content: center; z-index: 200; opacity: 0; visibility: hidden; transition: all 0.4s var(--ease-out); }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal { width: 100%; max-width: 480px; max-height: 90vh; background: var(--bg-secondary); border-radius: var(--radius-xl) var(--radius-xl) 0 0; transform: translateY(100%); transition: transform 0.5s var(--ease-spring); display: flex; flex-direction: column; border: 1px solid var(--border-subtle); border-bottom: none; }
+        .modal-overlay.show .modal { transform: translateY(0); }
+        .modal-handle { width: 40px; height: 5px; background: var(--border-default); border-radius: var(--radius-full); margin: 12px auto 8px; cursor: grab; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px 16px; border-bottom: 1px solid var(--border-subtle); }
+        .modal-title { font-size: 20px; font-weight: 700; }
+        .modal-close { width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--bg-elevated); border: none; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s var(--ease-spring); }
+        .modal-close:hover { background: var(--rose-dim); color: var(--rose); transform: rotate(90deg); }
+        .modal-close:active { transform: scale(0.9) rotate(90deg); }
+        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 16px 20px calc(16px + var(--safe-bottom)); border-top: 1px solid var(--border-subtle); display: flex; gap: 12px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+        .form-input { width: 100%; padding: 16px 18px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 15px; transition: all 0.3s var(--ease-out); }
+        .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-dim); transform: translateY(-2px); }
+        .form-input::placeholder { color: var(--text-muted); }
+        select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 48px; cursor: pointer; }
+        textarea.form-input { resize: none; min-height: 90px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .icon-picker { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: var(--bg-elevated); border-radius: var(--radius-md); }
+        .icon-option { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 26px; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s var(--ease-spring); background: transparent; border: 2px solid transparent; }
+        .icon-option:hover { transform: scale(1.15) rotate(-5deg); background: var(--bg-glass); }
+        .icon-option:active { transform: scale(0.9); }
+        .icon-option.selected { background: var(--accent-dim); border-color: var(--accent); transform: scale(1.1); }
+        .btn { flex: 1; padding: 16px 24px; border-radius: var(--radius-md); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s var(--ease-spring); position: relative; overflow: hidden; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, var(--accent) 0%, var(--amber) 100%); color: white; box-shadow: 0 4px 16px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
+        .btn-secondary { background: var(--bg-elevated); color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--bg-glass); }
+        .btn-danger { background: var(--rose-dim); color: var(--rose); }
+        .btn-violet { background: linear-gradient(135deg, var(--accent) 0%, var(--amber) 100%); color: white; }
+        .task-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; animation: taskSlideIn 0.4s var(--ease-out) backwards; }
+        @keyframes taskSlideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .task-row .form-input { flex: 1; }
+        .task-row select { width: 110px; flex-shrink: 0; }
+        .icon-btn { width: 44px; height: 44px; border-radius: var(--radius-md); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s var(--ease-spring); }
+        .icon-btn:active { transform: scale(0.8); }
+        .icon-btn.danger { background: var(--rose-dim); color: var(--rose); }
+        .icon-btn.danger:hover { background: var(--rose); color: white; }
+        .add-task-btn { width: 100%; padding: 16px; background: var(--bg-glass); border: 2px dashed var(--border-default); border-radius: var(--radius-md); color: var(--text-secondary); font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s var(--ease-spring); }
+        .add-task-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); transform: scale(1.02); }
+        .detail-header { padding: 20px; background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%); position: relative; }
+        .detail-header::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 300px; height: 200px; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); opacity: 0.4; filter: blur(50px); animation: headerGlow 4s ease-in-out infinite; }
+        @keyframes headerGlow { 0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(1); } 50% { opacity: 0.5; transform: translateX(-50%) scale(1.1); } }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: var(--accent); font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; padding: 8px 0; margin-bottom: 16px; position: relative; z-index: 1; transition: all 0.2s var(--ease-out); }
+        .back-btn:hover { transform: translateX(-4px); }
+        .back-btn:active { transform: scale(0.95); }
+        .detail-title { font-size: 28px; font-weight: 800; margin-bottom: 20px; position: relative; z-index: 1; animation: titleSlide 0.5s var(--ease-out); }
+        @keyframes titleSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; position: relative; z-index: 1; }
+        .detail-stat { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; text-align: center; backdrop-filter: blur(10px); transition: all 0.3s var(--ease-out); }
+        .detail-stat:hover { transform: translateY(-2px); border-color: var(--border-default); }
+        .detail-stat-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+        .detail-stat-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .detail-actions { display: flex; gap: 10px; margin-top: 16px; position: relative; z-index: 1; }
+        .action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s var(--ease-spring); }
+        .action-btn:hover { background: var(--bg-glass); transform: translateY(-2px); }
+        .action-btn:active { transform: scale(0.97); }
+        .action-btn.danger { color: var(--rose); background: var(--rose-dim); border-color: transparent; }
+        .action-btn.danger:hover { background: var(--rose); color: white; }
+        .action-btn.confirm-delete { background: var(--rose); color: white; animation: shake 0.5s var(--ease-out); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+        .task-section { padding: 20px; }
+        .task-item { display: flex; align-items: center; gap: 14px; padding: 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); margin-bottom: 10px; cursor: pointer; transition: all 0.3s var(--ease-spring); backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+        .task-item:hover { transform: translateX(4px); border-color: var(--border-default); }
+        .task-item:active { transform: scale(0.98); }
+        .task-item.completed { background: var(--emerald-dim); border-color: rgba(16, 185, 129, 0.2); }
+        .task-checkbox { width: 32px; height: 32px; border-radius: var(--radius-full); border: 2px solid var(--border-default); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s var(--ease-spring); }
+        .task-checkbox:hover { border-color: var(--accent); transform: scale(1.1); }
+        .task-checkbox:active { transform: scale(0.8); }
+        .task-checkbox.checked { background: var(--emerald); border-color: var(--emerald); animation: checkBounce 0.5s var(--ease-spring); }
+        @keyframes checkBounce { 0% { transform: scale(1); } 30% { transform: scale(1.4); } 50% { transform: scale(0.9); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .task-checkbox svg { width: 14px; height: 14px; color: white; opacity: 0; transform: scale(0) rotate(-45deg); transition: all 0.3s var(--ease-spring); }
+        .task-checkbox.checked svg { opacity: 1; transform: scale(1) rotate(0deg); }
+        .task-info { flex: 1; min-width: 0; }
+        .task-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; transition: all 0.3s; }
+        .task-item.completed .task-name { color: var(--text-muted); text-decoration: line-through; }
+        .task-freq { font-size: 12px; color: var(--text-muted); }
+        .task-streak { display: flex; align-items: center; gap: 4px; padding: 8px 14px; background: var(--amber-dim); border-radius: var(--radius-full); font-size: 13px; font-weight: 600; color: var(--amber); transition: all 0.3s var(--ease-spring); }
+        .task-item:hover .task-streak { transform: scale(1.05); }
+        .celebration-overlay { position: fixed; inset: 0; background: rgba(10, 10, 12, 0.97); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 500; opacity: 0; visibility: hidden; transition: all 0.5s var(--ease-out); }
+        .celebration-overlay.show { opacity: 1; visibility: visible; }
+        .celebration-emoji { font-size: 100px; margin-bottom: 24px; animation: celebrateBounce 0.6s var(--ease-spring) infinite; }
+        @keyframes celebrateBounce { 0%, 100% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.2) rotate(-10deg); } 75% { transform: scale(1.2) rotate(10deg); } }
+        .celebration-title { font-size: 36px; font-weight: 800; color: var(--emerald); margin-bottom: 12px; text-align: center; animation: titlePop 0.5s var(--ease-spring) 0.2s backwards; }
+        @keyframes titlePop { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+        .celebration-subtitle { font-size: 16px; color: var(--text-secondary); margin-bottom: 40px; text-align: center; max-width: 300px; }
+        .celebration-close { padding: 18px 56px; background: linear-gradient(135deg, var(--accent) 0%, var(--amber) 100%); border: none; border-radius: var(--radius-full); color: white; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 32px var(--accent-glow); transition: all 0.3s var(--ease-spring); }
+        .celebration-close:hover { transform: scale(1.05); }
+        .celebration-close:active { transform: scale(0.95); }
+        .analytics-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 16px; backdrop-filter: blur(10px); transition: all 0.3s var(--ease-out); }
+        .analytics-card:hover { border-color: var(--border-default); }
+        .analytics-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .analytics-title span { font-size: 20px; }
+        .tracker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: 6px; }
+        .tracker-cell { aspect-ratio: 1; border-radius: 8px; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; transition: all 0.2s var(--ease-spring); cursor: pointer; }
+        .tracker-cell:hover { transform: scale(1.15); }
+        .tracker-cell:active { transform: scale(0.85); }
+        .tracker-cell.done { background: var(--emerald); box-shadow: 0 0 16px rgba(16, 185, 129, 0.4); animation: cellPop 0.3s var(--ease-spring); }
+        @keyframes cellPop { 0% { transform: scale(0); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        .tracker-cell svg { width: 12px; height: 12px; color: white; opacity: 0; }
+        .tracker-cell.done svg { opacity: 1; }
+        .heatmap { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+        .heatmap-cell { aspect-ratio: 1; border-radius: 4px; background: var(--bg-elevated); cursor: pointer; transition: all 0.2s var(--ease-spring); }
+        .heatmap-cell:hover { transform: scale(1.2); }
+        .heatmap-cell:active { transform: scale(0.8); }
+        .heatmap-cell.done { background: var(--emerald); }
+        .heatmap-cell.missed { background: var(--rose-dim); }
+        .heatmap-legend { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 14px; font-size: 10px; color: var(--text-muted); }
+        .heatmap-legend-item { width: 12px; height: 12px; border-radius: 3px; }
+        .review-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px; backdrop-filter: blur(10px); transition: all 0.3s var(--ease-out); }
+        .review-card:hover { border-color: var(--border-default); transform: translateY(-2px); }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .review-week { font-size: 15px; font-weight: 700; }
+        .review-score { padding: 6px 14px; background: var(--accent-dim); border-radius: var(--radius-full); font-size: 14px; font-weight: 700; color: var(--accent); }
+        .review-section { margin-bottom: 12px; }
+        .review-section:last-child { margin-bottom: 0; }
+        .review-question { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .review-answer { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); margin-bottom: 10px; cursor: pointer; transition: all 0.3s var(--ease-spring); backdrop-filter: blur(10px); }
+        .settings-item:hover { transform: translateX(4px); border-color: var(--border-default); }
+        .settings-item:active { transform: scale(0.98); }
+        .settings-icon { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--accent-dim); display: flex; align-items: center; justify-content: center; margin-right: 14px; color: var(--accent); transition: all 0.3s var(--ease-spring); }
+        .settings-item:hover .settings-icon { transform: scale(1.1) rotate(-5deg); }
+        /* FIXED: Changed violet to accent/orange */
+        .settings-icon.violet { background: var(--accent-dim); color: var(--accent); }
+        .toggle-switch { width: 52px; height: 30px; background: var(--bg-elevated); border-radius: var(--radius-full); position: relative; cursor: pointer; transition: all 0.3s var(--ease-spring); flex-shrink: 0; }
+        .toggle-switch.active { background: var(--accent); }
+        .toggle-knob { width: 24px; height: 24px; background: white; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: all 0.3s var(--ease-spring); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .toggle-switch.active .toggle-knob { left: 25px; }
+        .settings-content { flex: 1; }
+        .settings-label { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+        .settings-desc { font-size: 12px; color: var(--text-muted); }
+        .sprint-selector { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .sprint-selector-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .sprint-selector-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
+        .sprint-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
+        .sprint-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-elevated); border-radius: var(--radius-md); cursor: pointer; transition: all 0.3s var(--ease-spring); }
+        .sprint-item:hover { background: var(--bg-glass); transform: translateX(4px); }
+        .sprint-item.active { background: var(--accent-dim); border: 1px solid var(--accent); }
+        .sprint-item-name { font-size: 14px; font-weight: 500; }
+        .sprint-item-dates { font-size: 11px; color: var(--text-muted); }
+        /* FIXED: Archive card - orange gradient instead of violet */
+        .archive-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.4s var(--ease-spring); position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+        .archive-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 80px; background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(251, 191, 36, 0.08) 100%); opacity: 0.5; filter: blur(30px); transition: all 0.3s; }
+        .archive-card:hover { border-color: var(--accent); transform: translateY(-4px) scale(1.01); }
+        .archive-card:hover::before { opacity: 0.8; }
+        .archive-card:active { transform: scale(0.98); }
+        .archive-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; position: relative; z-index: 1; }
+        .archive-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .archive-dates { font-size: 12px; color: var(--text-muted); }
+        .archive-score { padding: 10px 18px; background: var(--accent-dim); border-radius: var(--radius-full); font-size: 18px; font-weight: 700; color: var(--accent); }
+        .archive-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; position: relative; z-index: 1; }
+        .archive-stat { text-align: center; padding: 12px; background: var(--bg-elevated); border-radius: var(--radius-md); transition: all 0.2s; }
+        .archive-stat:hover { transform: translateY(-2px); }
+        .archive-stat-value { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+        .archive-stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+        /* FIXED: Archive detail header - orange instead of violet */
+        .archive-detail-header { text-align: center; padding: 30px 20px; background: linear-gradient(180deg, var(--accent-dim) 0%, transparent 100%); border-bottom: 1px solid var(--border-subtle); margin-bottom: 20px; position: relative; }
+        .archive-detail-header::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 300px; height: 200px; background: radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, transparent 70%); opacity: 0.4; filter: blur(50px); }
+        .archive-detail-badge { display: inline-block; padding: 8px 18px; background: var(--accent-dim); border: 1px solid var(--accent); border-radius: var(--radius-full); font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; position: relative; z-index: 1; }
+        .archive-detail-name { font-size: 28px; font-weight: 800; margin-bottom: 8px; position: relative; z-index: 1; }
+        .archive-detail-dates { font-size: 14px; color: var(--text-muted); position: relative; z-index: 1; }
+        .sprint-complete-banner { background: linear-gradient(135deg, var(--accent-dim) 0%, var(--amber-dim) 100%); border: 1px solid var(--accent); border-radius: var(--radius-xl); padding: 28px; margin-bottom: 24px; text-align: center; position: relative; overflow: hidden; animation: bannerPulse 2s ease-in-out infinite; }
+        @keyframes bannerPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); } }
+        .sprint-complete-banner::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 200px; height: 150px; background: radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, transparent 70%); opacity: 0.5; filter: blur(30px); }
+        .sprint-complete-icon { font-size: 52px; margin-bottom: 14px; position: relative; z-index: 1; animation: iconWiggle 1s ease-in-out infinite; }
+        @keyframes iconWiggle { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        .sprint-complete-title { font-size: 22px; font-weight: 800; color: var(--accent); margin-bottom: 8px; position: relative; z-index: 1; }
+        .sprint-complete-text { font-size: 14px; color: var(--text-secondary); margin-bottom: 18px; position: relative; z-index: 1; }
+        .sprint-complete-actions { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; }
+        .toast { position: fixed; bottom: calc(140px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(20px); padding: 16px 28px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-full); font-size: 14px; font-weight: 500; box-shadow: 0 12px 40px rgba(0,0,0,0.5); z-index: 300; opacity: 0; visibility: hidden; transition: all 0.4s var(--ease-spring); backdrop-filter: blur(10px); }
+        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: var(--emerald); border-color: var(--emerald); color: white; }
+        .success-ring { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--emerald); animation: ringPulse 0.6s var(--ease-out) forwards; z-index: 1000; pointer-events: none; }
+        @keyframes ringPulse { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; border-width: 4px; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; border-width: 1px; } }
+        .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 1000; overflow: hidden; }
+        .confetti { position: absolute; width: 10px; height: 10px; animation: confettiFall 1.5s var(--ease-out) forwards; }
+        @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; } }
+        .pull-indicator { position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-100%); padding: 12px 24px; background: var(--bg-elevated); border-radius: 0 0 var(--radius-lg) var(--radius-lg); font-size: 12px; font-weight: 600; color: var(--text-muted); transition: transform 0.3s var(--ease-out); z-index: 50; }
+        .pull-indicator.show { transform: translateX(-50%) translateY(0); }
+        .pull-indicator.loading { color: var(--accent); }
+        .hidden { display: none !important; }
+        .text-accent { color: var(--accent); }
+        .text-emerald { color: var(--emerald); }
+        .text-rose { color: var(--rose); }
+        .text-amber { color: var(--amber); }
+        .text-violet { color: var(--accent); }
+        .skeleton { background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-card) 50%, var(--bg-elevated) 75%); background-size: 200% 100%; animation: skeletonWave 1.5s ease-in-out infinite; border-radius: var(--radius-md); }
+        @keyframes skeletonWave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-card { height: 180px; margin-bottom: 14px; border-radius: var(--radius-xl); }
+        .skeleton-stat { height: 100px; border-radius: var(--radius-lg); }
+        .skeleton-ring { width: 170px; height: 170px; border-radius: 50%; margin: 0 auto 20px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 4px; }
+        
+        /* ========== DESKTOP ADAPTIVE ========== */
+        
+        /* Sidebar - скрыт на мобильных */
+        .sidebar { display: none; }
+        
+        /* Tablet (768px - 1024px) */
+        @media (min-width: 768px) {
+            .app { max-width: 680px; }
+            .bottom-nav { max-width: 680px; }
+            .modal { max-width: 680px; }
+            .bento-grid { grid-template-columns: repeat(4, 1fr); }
+            .goals-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .goal-card { margin-bottom: 0; }
+            .bar-column { max-width: 80px; }
+            .progress-ring-container { width: 200px; height: 200px; }
+            .progress-ring { width: 200px; height: 200px; }
+            .progress-ring-fill, .progress-ring-bg { stroke-dasharray: 565; }
+            .progress-ring-value { font-size: 64px; }
+            .detail-stats { grid-template-columns: repeat(4, 1fr); }
+            .archive-stats { grid-template-columns: repeat(4, 1fr); }
+            .fab { right: 30px; bottom: calc(110px + var(--safe-bottom)); width: 70px; height: 70px; }
+            .fab svg { width: 30px; height: 30px; }
+        }
+        
+        /* Desktop (>1024px) */
+        @media (min-width: 1024px) {
+            body { overflow: auto; }
+            
+            .app { 
+                max-width: 100%; 
+                flex-direction: row; 
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            /* Sidebar */
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                width: 240px;
+                min-width: 240px;
+                height: 100vh;
+                background: var(--bg-secondary);
+                border-right: 1px solid var(--border-subtle);
+                padding: 24px 16px;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            
+            .sidebar-logo {
+                font-size: 28px;
+                font-weight: 800;
+                letter-spacing: -0.5px;
+                background: linear-gradient(135deg, var(--accent) 0%, var(--amber) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+            
+            .sidebar-week {
+                font-size: 13px;
+                color: var(--text-muted);
+                padding: 0 12px;
+                margin-bottom: 32px;
+            }
+            
+            .sidebar-week span { color: var(--accent); font-weight: 700; }
+            
+            .sidebar-nav {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex: 1;
+            }
+            
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+                border-radius: var(--radius-lg);
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s var(--ease-out);
+                text-align: left;
+            }
+            
+            .sidebar-item:hover {
+                background: var(--bg-elevated);
+                color: var(--text-primary);
+            }
+            
+            .sidebar-item.active {
+                background: var(--accent-dim);
+                color: var(--accent);
+            }
+            
+            .sidebar-item svg {
+                width: 20px;
+                height: 20px;
+                flex-shrink: 0;
+            }
+            
+            .sidebar-item .shortcut {
+                margin-left: auto;
+                font-size: 11px;
+                color: var(--text-muted);
+                background: var(--bg-elevated);
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-family: monospace;
+            }
+            
+            .sidebar-item.active .shortcut {
+                background: rgba(249, 115, 22, 0.2);
+                color: var(--accent);
+            }
+            
+            .sidebar-footer {
+                padding-top: 16px;
+                border-top: 1px solid var(--border-subtle);
+                margin-top: auto;
+            }
+            
+            .sidebar-footer-text {
+                font-size: 11px;
+                color: var(--text-muted);
+                padding: 0 12px;
+            }
+            
+            /* Hide mobile elements on desktop */
+            .header { display: none; }
+            .bottom-nav { display: none; }
+            
+            /* Main content area */
+            .main-wrapper {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            .desktop-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 24px 40px;
+                background: var(--bg-primary);
+                border-bottom: 1px solid var(--border-subtle);
+            }
+            
+            .desktop-header-title {
+                font-size: 24px;
+                font-weight: 700;
+            }
+            
+            .desktop-header-actions {
+                display: flex;
+                gap: 12px;
+            }
+            
+            .main { 
+                flex: 1;
+                padding: 32px 40px 40px; 
+                max-width: 1200px;
+                margin: 0 auto;
+                width: 100%;
+                overflow-y: auto;
+            }
+            
+            /* Wider grids */
+            .bento-grid { 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 16px;
+            }
+            
+            .goals-list { 
+                display: grid; 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 20px; 
+            }
+            
+            .goal-card { margin-bottom: 0; }
+            
+            /* Larger progress ring */
+            .hero-progress { padding: 40px 0; }
+            .progress-ring-container { width: 220px; height: 220px; }
+            .progress-ring { width: 220px; height: 220px; }
+            .progress-ring-fill, .progress-ring-bg { stroke-dasharray: 628; }
+            .progress-ring-value { font-size: 72px; }
+            
+            /* Charts */
+            .weekly-chart-card { padding: 28px; }
+            .bar-chart { height: 160px; }
+            .bar-track { height: 120px; }
+            .bar-column { max-width: 100px; }
+            
+            /* Stats */
+            .detail-stats { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+            .archive-stats { grid-template-columns: repeat(4, 1fr); }
+            
+            /* FAB position */
+            .fab { 
+                position: fixed;
+                right: 40px; 
+                bottom: 40px; 
+                width: 64px; 
+                height: 64px;
+            }
+            
+            /* Modals - centered on desktop */
+            .modal-overlay { align-items: center; }
+            .modal { 
+                max-width: 560px; 
+                border-radius: var(--radius-xl);
+                max-height: 85vh;
+            }
+            .modal-handle { display: none; }
+            
+            /* Analytics */
+            .analytics-card { padding: 24px; }
+            .tracker-grid { grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); }
+            .heatmap { grid-template-columns: repeat(14, 1fr); gap: 6px; }
+            
+            /* Review cards in grid */
+            .review-card { padding: 24px; }
+            
+            /* Settings */
+            .settings-item { padding: 20px; }
+            .sprint-selector { padding: 24px; }
+            
+            /* Hover effects for desktop */
+            .goal-card:hover { transform: translateY(-8px) scale(1.02); }
+            .bento-card:hover { transform: translateY(-6px) scale(1.03); }
+            .task-item:hover { transform: translateX(8px); }
+            .archive-card:hover { transform: translateY(-8px) scale(1.02); }
+            
+            /* Better typography on large screens */
+            .section-title { font-size: 13px; letter-spacing: 2px; }
+            .empty-title { font-size: 32px; }
+            .empty-text { font-size: 16px; max-width: 400px; }
+            .detail-title { font-size: 32px; }
+        }
+        
+        /* Extra large screens */
+        @media (min-width: 1440px) {
+            .sidebar { width: 280px; min-width: 280px; }
+            .main { max-width: 1400px; padding: 40px 60px; }
+            .goals-list { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="parallax-bg" id="parallaxBg">
+            <div class="ambient-glow"></div>
+            <div class="ambient-glow-2"></div>
+        </div>
+        <div class="pull-indicator" id="pullIndicator">↓ Потяни для обновления</div>
+        
+        <!-- Sidebar для Desktop -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">HUSTLE YEAR</div>
+            <div class="sidebar-week">Неделя <span id="weekNumSidebar">1/12</span></div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item active" data-tab="home" onclick="switchTab('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Обзор
+                    <span class="shortcut">1</span>
+                </button>
+                <button class="sidebar-item" data-tab="analytics" onclick="switchTab('analytics')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    Трекер
+                    <span class="shortcut">2</span>
+                </button>
+                <button class="sidebar-item" data-tab="archive" onclick="switchTab('archive')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                    Архив
+                    <span class="shortcut">3</span>
+                </button>
+                <button class="sidebar-item" data-tab="review" onclick="switchTab('review')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Итоги
+                    <span class="shortcut">4</span>
+                </button>
+                <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Настройки
+                    <span class="shortcut">5</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-footer-text">⌘ + N — новая цель</div>
+            </div>
+        </aside>
+        
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <header class="header">
+                <div class="logo">HUSTLE YEAR</div>
+                <div class="week-badge"><span>Неделя</span><span class="week-num" id="weekNum">1/12</span></div>
+            </header>
+            <main class="main" id="mainContent"></main>
+        </div>
+        <button class="fab" id="fab" onclick="openCreateModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <nav class="bottom-nav" id="bottomNav">
+            <div class="nav-container">
+                <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Обзор</span></button>
+                <button class="nav-item" data-tab="analytics" onclick="switchTab('analytics')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Трекер</span></button>
+                <button class="nav-item" data-tab="archive" onclick="switchTab('archive')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg><span>Архив</span></button>
+                <button class="nav-item" data-tab="review" onclick="switchTab('review')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>Итоги</span></button>
+                <button class="nav-item" data-tab="settings" onclick="switchTab('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Ещё</span></button>
+            </div>
+        </nav>
+        <div class="modal-overlay" id="createModal">
+            <div class="modal">
+                <div class="modal-handle"></div>
+                <div class="modal-header"><span class="modal-title" id="modalTitle">Новая цель</span><button class="modal-close" onclick="closeCreateModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                <div class="modal-body">
+                    <div class="form-group"><label class="form-label">Иконка</label><div class="icon-picker" id="iconPicker"></div></div>
+                    <div class="form-group"><label class="form-label">Название цели</label><input type="text" class="form-input" id="goalTitle" placeholder="Запустить онлайн-курс"></div>
+                    <div class="form-group"><label class="form-label">Действия</label><div id="tasksList"></div><button class="add-task-btn" onclick="addTaskField()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить действие</button></div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" onclick="closeCreateModal()">Отмена</button><button class="btn btn-primary" onclick="saveGoal()">Создать</button></div>
+            </div>
+        </div>
+        <div class="modal-overlay" id="newSprintModal">
+            <div class="modal">
+                <div class="modal-handle"></div>
+                <div class="modal-header"><span class="modal-title">🚀 Новый спринт</span><button class="modal-close" onclick="closeNewSprintModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                <div class="modal-body">
+                    <div class="form-group"><label class="form-label">Название спринта</label><input type="text" class="form-input" id="newSprintName" placeholder="Q1 2025 Sprint"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Дата старта</label><input type="date" class="form-input" id="newSprintStart" onchange="updateNewSprintDays()"></div>
+                        <div class="form-group"><label class="form-label">Дата финиша</label><input type="date" class="form-input" id="newSprintEnd" onchange="updateNewSprintDays()"></div>
+                    </div>
+                    <div class="sprint-info" style="margin-top:8px"><div style="text-align:center"><div style="font-size:42px;font-weight:800;color:var(--accent)" id="newSprintDays">84</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">Дней в спринте</div></div></div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" onclick="closeNewSprintModal()">Отмена</button><button class="btn btn-primary" onclick="createNewSprintFromModal()">Создать спринт</button></div>
+            </div>
+        </div>
+        <div class="modal-overlay" id="reviewModal">
+            <div class="modal">
+                <div class="modal-handle"></div>
+                <div class="modal-header"><span class="modal-title">Итоги недели <span id="reviewWeekNum"></span></span><button class="modal-close" onclick="closeReviewModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                <div class="modal-body">
+                    <div class="form-group"><label class="form-label">Оценка выполнения (%)</label><input type="number" class="form-input" id="reviewScore" min="0" max="100" value="50"></div>
+                    <div class="form-group"><label class="form-label">⚡ Где я слил энергию/время?</label><textarea class="form-input" id="reviewEnergy" placeholder="Опиши, что отвлекало..."></textarea></div>
+                    <div class="form-group"><label class="form-label">🚧 Что тормозит прогресс?</label><textarea class="form-input" id="reviewBlocker" placeholder="Главная вещь, которая мешает..."></textarea></div>
+                    <div class="form-group"><label class="form-label">🎯 Точки роста</label><textarea class="form-input" id="reviewGrowth" placeholder="Над чем поработать..."></textarea></div>
+                    <div class="form-group"><label class="form-label">🏆 Победы недели</label><textarea class="form-input" id="reviewWins" placeholder="Всё что получилось..."></textarea></div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" onclick="closeReviewModal()">Отмена</button><button class="btn btn-primary" onclick="saveReview()">Сохранить</button></div>
+            </div>
+        </div>
+        <div class="celebration-overlay" id="celebrationOverlay">
+            <div class="celebration-emoji">🎉</div>
+            <div class="celebration-title">Всё сделано!</div>
+            <div class="celebration-subtitle">Ты выполнил все задачи на сегодня</div>
+            <button class="celebration-close" onclick="closeCelebration()">Отлично</button>
+        </div>
+        <div class="celebration-overlay" id="sprintCompleteOverlay">
+            <div class="celebration-emoji">🏆</div>
+            <div class="celebration-title">Спринт завершён!</div>
+            <div class="celebration-subtitle" id="sprintCompleteStats">Отличная работа!</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+                <button class="celebration-close" onclick="archiveAndNewSprint()">Новый спринт</button>
+                <button class="celebration-close" style="background:var(--bg-elevated);color:var(--text-secondary)" onclick="closeSprintComplete()">Позже</button>
+            </div>
+        </div>
+        <div class="toast" id="toast"></div>
+        <div class="confetti-container" id="confettiContainer"></div>
+        <svg width="0" height="0" style="position:absolute">
+            <defs>
+                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#fbbf24"/></linearGradient>
+                <linearGradient id="trendGradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#f97316;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#f97316;stop-opacity:0"/></linearGradient>
+                <!-- FIXED: Changed violet gradient to orange -->
+                <linearGradient id="violetGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#fbbf24"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+    <script>
+        let state = { currentSprintId: null, sprints: [], archivedSprints: [], settings: { soundEnabled: true, vibrationEnabled: true } };
+        let currentTab = 'home', selectedGoal = null, selectedTask = null, selectedArchive = null, editingGoalId = null, selectedIcon = '🎯', isLoading = true;
+        let lastScrollY = 0, pullStartY = 0, isPulling = false;
+        let audioContext = null;
+        function initAudio() { if (!audioContext) { audioContext = new (window.AudioContext || window.webkitAudioContext)(); } return audioContext; }
+        const SoundFX = {
+            taskComplete: () => { if (!state.settings?.soundEnabled) return; try { const ctx = initAudio(); const oscillator = ctx.createOscillator(); const gainNode = ctx.createGain(); oscillator.connect(gainNode); gainNode.connect(ctx.destination); oscillator.frequency.setValueAtTime(880, ctx.currentTime); oscillator.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.1); oscillator.type = 'sine'; gainNode.gain.setValueAtTime(0.3, ctx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2); oscillator.start(ctx.currentTime); oscillator.stop(ctx.currentTime + 0.2); } catch(e) {} },
+            taskUndo: () => { if (!state.settings?.soundEnabled) return; try { const ctx = initAudio(); const oscillator = ctx.createOscillator(); const gainNode = ctx.createGain(); oscillator.connect(gainNode); gainNode.connect(ctx.destination); oscillator.frequency.setValueAtTime(440, ctx.currentTime); oscillator.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.15); oscillator.type = 'sine'; gainNode.gain.setValueAtTime(0.2, ctx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15); oscillator.start(ctx.currentTime); oscillator.stop(ctx.currentTime + 0.15); } catch(e) {} },
+            celebration: () => { if (!state.settings?.soundEnabled) return; try { const ctx = initAudio(); const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, i) => { const oscillator = ctx.createOscillator(); const gainNode = ctx.createGain(); oscillator.connect(gainNode); gainNode.connect(ctx.destination); oscillator.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.1); oscillator.type = 'sine'; gainNode.gain.setValueAtTime(0, ctx.currentTime + i * 0.1); gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.1 + 0.05); gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.1 + 0.3); oscillator.start(ctx.currentTime + i * 0.1); oscillator.stop(ctx.currentTime + i * 0.1 + 0.3); }); } catch(e) {} },
+            achievement: () => { if (!state.settings?.soundEnabled) return; try { const ctx = initAudio(); const notes = [392, 523.25, 659.25, 783.99]; notes.forEach((freq, i) => { const oscillator = ctx.createOscillator(); const gainNode = ctx.createGain(); oscillator.connect(gainNode); gainNode.connect(ctx.destination); oscillator.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08); oscillator.type = 'triangle'; gainNode.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.08); gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.4); oscillator.start(ctx.currentTime + i * 0.08); oscillator.stop(ctx.currentTime + i * 0.08 + 0.4); }); } catch(e) {} },
+            tap: () => { if (!state.settings?.soundEnabled) return; try { const ctx = initAudio(); const oscillator = ctx.createOscillator(); const gainNode = ctx.createGain(); oscillator.connect(gainNode); gainNode.connect(ctx.destination); oscillator.frequency.setValueAtTime(600, ctx.currentTime); oscillator.type = 'sine'; gainNode.gain.setValueAtTime(0.1, ctx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05); oscillator.start(ctx.currentTime); oscillator.stop(ctx.currentTime + 0.05); } catch(e) {} }
+        };
+        function haptic(type = 'light') { if (!state.settings?.vibrationEnabled) return; if ('vibrate' in navigator) { switch(type) { case 'light': navigator.vibrate(10); break; case 'medium': navigator.vibrate(25); break; case 'heavy': navigator.vibrate(40); break; case 'success': navigator.vibrate([10, 30, 10, 30, 20]); break; case 'error': navigator.vibrate([50, 30, 50]); break; case 'celebration': navigator.vibrate([10, 20, 10, 20, 10, 20, 50]); break; } } }
+        const FREQ = { 'daily': { label: 'Ежедневно', total: 84 }, 'weekly': { label: '1×/неделю', total: 12 }, 'twice-week': { label: '2×/неделю', total: 24 }, 'three-week': { label: '3×/неделю', total: 36 }, 'workdays': { label: 'По будням', total: 60 } };
+        const ICONS = ['🎯', '🚀', '💪', '📈', '⭐', '🔥', '💡', '🏆', '💰', '📚', '🎨', '🏃', '🧘', '💻', '✍️', '🎸'];
+        const GRADIENTS = ['gradient-fire', 'gradient-ocean', 'gradient-forest'];
+        const ACCENT_COLORS = ['var(--accent)', 'var(--cyan)', 'var(--emerald)'];
+        function animateCounter(element, target, duration = 1000) { const start = parseInt(element.textContent) || 0; const startTime = performance.now(); const easeOutQuart = t => 1 - Math.pow(1 - t, 4); function update(currentTime) { const elapsed = currentTime - startTime; const progress = Math.min(elapsed / duration, 1); const easedProgress = easeOutQuart(progress); const current = Math.round(start + (target - start) * easedProgress); element.textContent = current; if (progress < 1) requestAnimationFrame(update); } requestAnimationFrame(update); }
+        function initParallax() { const main = document.getElementById('mainContent'); const parallaxBg = document.getElementById('parallaxBg'); main.addEventListener('scroll', () => { const scrollY = main.scrollTop; const parallaxSpeed = 0.3; parallaxBg.style.transform = `translateY(${scrollY * parallaxSpeed}px)`; lastScrollY = scrollY; }, { passive: true }); }
+        function initPullToRefresh() { const main = document.getElementById('mainContent'); const indicator = document.getElementById('pullIndicator'); let startY = 0; let currentY = 0; main.addEventListener('touchstart', (e) => { if (main.scrollTop === 0) { startY = e.touches[0].pageY; isPulling = true; } }, { passive: true }); main.addEventListener('touchmove', (e) => { if (!isPulling) return; currentY = e.touches[0].pageY; const diff = currentY - startY; if (diff > 0 && main.scrollTop === 0) { indicator.classList.toggle('show', diff > 60); indicator.textContent = diff > 100 ? '↑ Отпусти для обновления' : '↓ Потяни для обновления'; } }, { passive: true }); main.addEventListener('touchend', () => { if (isPulling && currentY - startY > 100 && main.scrollTop === 0) { indicator.textContent = '⟳ Обновляю...'; indicator.classList.add('loading'); haptic('medium'); setTimeout(() => { render(); indicator.classList.remove('show', 'loading'); showToast('Обновлено! ✨', 'success'); }, 800); } else { indicator.classList.remove('show'); } isPulling = false; startY = 0; currentY = 0; }); }
+        function loadState() { try { const saved = localStorage.getItem('hustleYear_v9'); if (saved) state = JSON.parse(saved); if (!state.archivedSprints) state.archivedSprints = []; if (!state.settings) state.settings = { soundEnabled: true, vibrationEnabled: true }; if (state.settings.soundEnabled === undefined) state.settings.soundEnabled = true; if (state.settings.vibrationEnabled === undefined) state.settings.vibrationEnabled = true; if (state.sprints.length > 0 && !state.currentSprintId) state.currentSprintId = state.sprints[0]?.id; checkExpiredSprints(); } catch(e) {} setTimeout(() => { isLoading = false; render(); }, 500); }
+        function saveState() { try { localStorage.setItem('hustleYear_v9', JSON.stringify(state)); } catch(e) {} }
+        function getCurrentSprint() { return state.sprints.find(s => s.id === state.currentSprintId) || state.sprints[0]; }
+        function checkExpiredSprints() { const today = new Date().toISOString().split('T')[0]; const expiredSprints = state.sprints.filter(s => s.endDate < today); if (expiredSprints.length > 0) setTimeout(() => { if (expiredSprints.some(s => s.id === state.currentSprintId)) showSprintCompleteOverlay(); }, 1500); }
+        function isSprintExpired(sprint) { if (!sprint) return false; return sprint.endDate < new Date().toISOString().split('T')[0]; }
+        function archiveSprint(sprintId) { const idx = state.sprints.findIndex(s => s.id === sprintId); if (idx === -1) return; const sprint = state.sprints[idx]; sprint.archivedAt = new Date().toISOString(); sprint.finalScore = calculateSprintScore(sprint); sprint.totalTasksCompleted = countCompletedTasks(sprint); sprint.totalTasks = countTotalTasks(sprint); state.archivedSprints.unshift(sprint); state.sprints.splice(idx, 1); if (state.currentSprintId === sprintId) state.currentSprintId = state.sprints[0]?.id || null; saveState(); showToast('Спринт архивирован! 📦', 'success'); }
+        function calculateSprintScore(sprint) { if (!sprint?.goals?.length) return 0; let total = 0, done = 0; const days = getSprintDaysForSprint(sprint); sprint.goals.forEach(g => g.tasks.forEach(t => { const f = FREQ[t.frequency]; if (f) { total += Math.round(f.total * days / 84); Object.keys(sprint.completions || {}).forEach(k => { if (k.startsWith(t.id + '_') && sprint.completions[k]) done++; }); } })); return total > 0 ? Math.round(done / total * 100) : 0; }
+        function countCompletedTasks(sprint) { return Object.values(sprint.completions || {}).filter(v => v).length; }
+        function countTotalTasks(sprint) { if (!sprint?.goals) return 0; let t = 0; const d = getSprintDaysForSprint(sprint); sprint.goals.forEach(g => g.tasks.forEach(task => { const f = FREQ[task.frequency]; if (f) t += Math.round(f.total * d / 84); })); return t; }
+        function getSprintDaysForSprint(sprint) { if (!sprint) return 84; return Math.ceil((new Date(sprint.endDate) - new Date(sprint.startDate)) / 86400000); }
+        function createNewSprint(name, startDate, endDate) { const start = startDate || new Date().toISOString().split('T')[0]; const end = endDate || new Date(Date.now() + 84*86400000).toISOString().split('T')[0]; const sprint = { id: genId(), name: name || `Спринт ${state.sprints.length + state.archivedSprints.length + 1}`, startDate: start, endDate: end, goals: [], completions: {}, reviews: [], createdAt: new Date().toISOString() }; state.sprints.push(sprint); state.currentSprintId = sprint.id; saveState(); return sprint; }
+        const genId = () => Math.random().toString(36).substr(2, 9);
+        const getToday = () => new Date().toISOString().split('T')[0];
+        const escapeHtml = t => { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; };
+        function formatDate(ds) { return new Date(ds).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); }
+        function formatDateFull(ds) { return new Date(ds).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }); }
+        function getSprintDays() { return getSprintDaysForSprint(getCurrentSprint()); }
+        function getCurrentWeek() { const s = getCurrentSprint(); if (!s) return { current: 1, total: 12 }; const start = new Date(s.startDate), end = new Date(s.endDate), now = new Date(); const totalDays = Math.ceil((end - start) / 86400000), totalWeeks = Math.ceil(totalDays / 7); const daysPassed = Math.floor((now - start) / 86400000); return { current: Math.min(Math.max(Math.ceil((daysPassed + 1) / 7), 1), totalWeeks), total: totalWeeks }; }
+        function getProgress(goal) { const s = getCurrentSprint(); if (!goal.tasks?.length || !s) return 0; let total = 0, done = 0; const days = getSprintDays(); goal.tasks.forEach(t => { const f = FREQ[t.frequency]; if (f) { total += Math.round(f.total * days / 84); Object.keys(s.completions).forEach(k => { if (k.startsWith(t.id + '_') && s.completions[k]) done++; }); } }); return total > 0 ? Math.min(Math.round(done / total * 100), 100) : 0; }
+        function getTaskDone(tid) { const s = getCurrentSprint(); return s ? Object.keys(s.completions).filter(k => k.startsWith(tid + '_') && s.completions[k]).length : 0; }
+        function getTaskTotal(freq) { const f = FREQ[freq]; return f ? Math.round(f.total * getSprintDays() / 84) : 0; }
+        function getWeeklyScore(weekNum) { const s = getCurrentSprint(); if (!s?.goals?.length) return 0; const start = new Date(s.startDate); const weekStart = new Date(start); weekStart.setDate(start.getDate() + (weekNum - 1) * 7); const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6); let total = 0, done = 0; s.goals.forEach(g => g.tasks.forEach(t => { for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) { const ds = d.toISOString().split('T')[0], dow = d.getDay(); let shouldDo = t.frequency === 'daily' || (t.frequency === 'workdays' && dow >= 1 && dow <= 5) || (t.frequency === 'weekly' && dow === 1) || (t.frequency === 'twice-week' && (dow === 1 || dow === 4)) || (t.frequency === 'three-week' && (dow === 1 || dow === 3 || dow === 5)); if (shouldDo) { total++; if (s.completions[t.id + '_' + ds]) done++; } } })); return total > 0 ? Math.round(done / total * 100) : 0; }
+        function getTrendData() { const w = getCurrentWeek(), data = []; for (let i = 1; i <= w.current; i++) data.push(getWeeklyScore(i)); return data; }
+        function showConfetti() { const c = document.getElementById('confettiContainer'); const colors = ['#f97316', '#fbbf24', '#10b981', '#fb923c', '#06b6d4', '#f43f5e', '#ffffff']; const shapes = ['square', 'circle']; for (let i = 0; i < 80; i++) { const el = document.createElement('div'); el.className = 'confetti'; el.style.left = Math.random() * 100 + '%'; el.style.background = colors[Math.floor(Math.random() * colors.length)]; el.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)] === 'circle' ? '50%' : '2px'; el.style.width = (6 + Math.random() * 8) + 'px'; el.style.height = (6 + Math.random() * 8) + 'px'; el.style.animationDelay = Math.random() * 0.8 + 's'; el.style.animationDuration = (1 + Math.random() * 1) + 's'; c.appendChild(el); setTimeout(() => el.remove(), 3000); } }
+        function showSuccessRing() { const r = document.createElement('div'); r.className = 'success-ring'; document.body.appendChild(r); setTimeout(() => r.remove(), 600); }
+        function showCelebration() { haptic('celebration'); SoundFX.celebration(); showConfetti(); document.getElementById('celebrationOverlay').classList.add('show'); }
+        function closeCelebration() { haptic('light'); document.getElementById('celebrationOverlay').classList.remove('show'); }
+        function showSprintCompleteOverlay() { const s = getCurrentSprint(); if (!s) return; const score = calculateSprintScore(s), completed = countCompletedTasks(s), total = countTotalTasks(s); document.getElementById('sprintCompleteStats').innerHTML = `Ты выполнил ${completed} из ${total} задач (${score}%)`; haptic('celebration'); SoundFX.achievement(); showConfetti(); document.getElementById('sprintCompleteOverlay').classList.add('show'); }
+        function closeSprintComplete() { haptic('light'); document.getElementById('sprintCompleteOverlay').classList.remove('show'); }
+        function archiveAndNewSprint() { const s = getCurrentSprint(); if (s) archiveSprint(s.id); closeSprintComplete(); openNewSprintModal(); }
+        function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 2500); }
+        function checkDayCompletion() { const s = getCurrentSprint(); if (!s?.goals?.length) return; const today = getToday(), dow = new Date().getDay(); let total = 0, done = 0; s.goals.forEach(g => g.tasks.forEach(t => { let shouldDo = t.frequency === 'daily' || (t.frequency === 'workdays' && dow >= 1 && dow <= 5) || (t.frequency === 'weekly' && dow === 1) || (t.frequency === 'twice-week' && (dow === 1 || dow === 4)) || (t.frequency === 'three-week' && (dow === 1 || dow === 3 || dow === 5)); if (shouldDo) { total++; if (s.completions[t.id + '_' + today]) done++; } })); if (total > 0 && done === total) showCelebration(); }
+        function render() { const s = getCurrentSprint(), w = s ? getCurrentWeek() : { current: 0, total: 0 }; document.getElementById('weekNum').textContent = w.current + '/' + w.total; const main = document.getElementById('mainContent'), fab = document.getElementById('fab'), nav = document.getElementById('bottomNav'); if (isLoading) { main.innerHTML = '<div class="page-container"><div class="skeleton skeleton-ring"></div><div class="bento-grid"><div class="skeleton skeleton-stat"></div><div class="skeleton skeleton-stat"></div><div class="skeleton skeleton-stat"></div><div class="skeleton skeleton-stat"></div></div><div class="skeleton skeleton-card"></div></div>'; return; } let content = ''; if (selectedArchive) { fab.classList.add('hidden'); nav.classList.add('hidden'); content = renderArchiveDetail(); } else if (selectedGoal) { fab.classList.add('hidden'); nav.classList.add('hidden'); content = renderGoalDetail(); } else if (selectedTask) { fab.classList.add('hidden'); nav.classList.add('hidden'); content = renderTaskTracker(); } else { const showFab = currentTab === 'home' && s && !isSprintExpired(s) && (s?.goals?.length || 0) < 3; fab.classList.toggle('hidden', !showFab); nav.classList.remove('hidden'); switch (currentTab) { case 'home': content = renderHome(); break; case 'analytics': content = renderAnalytics(); break; case 'archive': content = renderArchive(); break; case 'review': content = renderReview(); break; case 'settings': content = renderSettings(); break; } } main.innerHTML = content; document.querySelectorAll('.nav-item').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === currentTab)); requestAnimationFrame(() => { document.querySelectorAll('.stagger-item').forEach((el, i) => { el.style.animationDelay = (i * 0.08) + 's'; }); document.querySelectorAll('.progress-ring-fill').forEach(r => { const p = parseFloat(r.dataset.percent) || 0; setTimeout(() => { r.style.strokeDashoffset = 471 - (471 * p / 100); }, 100); }); document.querySelectorAll('.mini-ring-fill').forEach(r => { const p = parseFloat(r.dataset.percent) || 0; setTimeout(() => { r.style.strokeDashoffset = 157 - (157 * p / 100); }, 100); }); document.querySelectorAll('[data-counter]').forEach(el => { const target = parseInt(el.dataset.counter) || 0; animateCounter(el, target, 1200); }); document.querySelectorAll('.trend-dot').forEach((dot, i) => { dot.style.animationDelay = (0.8 + i * 0.15) + 's'; }); }); }
+        function renderHome() { const s = getCurrentSprint(); if (!s) return '<div class="page-container page-fade"><div class="empty-state"><div class="empty-icon">🚀</div><div class="empty-title">Создай первый спринт</div><div class="empty-text">12 недель фокуса, чтобы достичь своих целей</div><button class="btn btn-primary" style="margin-top:24px;padding:18px 40px" onclick="haptic(\'light\'); openNewSprintModal()">Начать спринт</button></div></div>'; const expired = isSprintExpired(s), w = getCurrentWeek(), today = getToday(), dow = new Date().getDay(); const endDate = new Date(s.endDate), now = new Date(), daysLeft = Math.max(0, Math.ceil((endDate - now) / 86400000)); let todayTasks = []; s.goals.forEach(g => g.tasks.forEach(t => { let shouldDo = t.frequency === 'daily' || (t.frequency === 'workdays' && dow >= 1 && dow <= 5) || (t.frequency === 'weekly' && dow === 1) || (t.frequency === 'twice-week' && (dow === 1 || dow === 4)) || (t.frequency === 'three-week' && (dow === 1 || dow === 3 || dow === 5)); if (shouldDo) { todayTasks.push({ task: t, goal: g, done: !!s.completions[t.id + '_' + today] }); } })); const todayDone = todayTasks.filter(t => t.done).length, todayTotal = todayTasks.length; const overall = s.goals.length > 0 ? Math.round(s.goals.reduce((a, g) => a + getProgress(g), 0) / s.goals.length) : 0; const weeklyScore = getWeeklyScore(w.current), trendData = getTrendData(); const prevWeekScore = w.current > 1 ? getWeeklyScore(w.current - 1) : 0, scoreDiff = weeklyScore - prevWeekScore; let html = '<div class="page-container">'; if (expired) html += `<div class="sprint-complete-banner stagger-item"><div class="sprint-complete-icon">🏁</div><div class="sprint-complete-title">Спринт завершён</div><div class="sprint-complete-text">"${escapeHtml(s.name)}" закончился ${formatDate(s.endDate)}. Финальный результат: ${overall}%</div><div class="sprint-complete-actions"><button class="btn btn-violet" onclick="haptic('medium'); archiveSprint('${s.id}'); openNewSprintModal()">📦 В архив + Новый</button></div></div>`; 
+        /* === QUICK ACTIONS === */
+        if (todayTasks.length > 0 && !expired) { html += `<div class="quick-actions-card stagger-item"><div class="quick-actions-header"><div class="quick-actions-title"><span class="quick-actions-icon">⚡</span>Сегодня</div><div class="quick-actions-counter ${todayDone === todayTotal && todayTotal > 0 ? 'complete' : ''}">${todayDone}/${todayTotal}</div></div><div class="quick-actions-list">`; todayTasks.sort((a, b) => a.done - b.done).forEach(({ task, goal, done }) => { const icon = goal.icon || '🎯'; html += `<div class="quick-action-item ${done ? 'done' : ''}" onclick="event.stopPropagation(); quickToggleTask('${task.id}', '${today}')"><div class="quick-action-check">${done ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div><div class="quick-action-content"><span class="quick-action-icon">${icon}</span><span class="quick-action-name">${escapeHtml(task.name)}</span></div><div class="quick-action-freq">${{daily:'ежедн.',workdays:'будни',weekly:'1×нед.','twice-week':'2×нед.','three-week':'3×нед.'}[task.frequency] || task.frequency}</div></div>`; }); html += '</div></div>'; } else if (s.goals.length > 0 && !expired) { html += `<div class="quick-actions-card stagger-item empty-quick"><div class="quick-actions-header"><div class="quick-actions-title"><span class="quick-actions-icon">✨</span>Всё сделано!</div></div><div style="text-align:center;padding:20px 0;color:var(--text-muted)">На сегодня задач нет. Отдыхай или добавь новые действия.</div></div>`; }
+        /* === ЦЕЛИ === */
+        html += `<div class="section-header stagger-item"><span class="section-title">Цели (${s.goals.length}/3)</span></div>`; if (s.goals.length === 0) { html += '<div class="empty-state stagger-item"><div class="empty-icon">🎯</div><div class="empty-title">Создай первую цель</div><div class="empty-text">Добавь до 3 целей на спринт</div></div>'; } else { html += '<div class="goals-list">'; s.goals.forEach((g, i) => { const p = getProgress(g), icon = g.icon || ICONS[i % ICONS.length], gradient = GRADIENTS[i % GRADIENTS.length], accentColor = ACCENT_COLORS[i % ACCENT_COLORS.length]; html += `<div class="goal-card ${gradient} stagger-item" onclick="haptic('light'); openGoal('${g.id}')"><div class="goal-header"><div class="goal-icon">${icon}</div><div class="goal-info"><div class="goal-title">${escapeHtml(g.title)}</div><div class="goal-subtitle">${g.tasks.length} действий</div></div><div class="mini-ring-container"><svg class="mini-ring" viewBox="0 0 58 58"><circle class="mini-ring-bg" cx="29" cy="29" r="25"/><circle class="mini-ring-fill" cx="29" cy="29" r="25" data-percent="${p}" style="stroke:${accentColor}"/></svg><div class="mini-ring-text" style="color:${accentColor}">${p}%</div></div></div><div class="goal-tasks">${g.tasks.slice(0, 3).map(t => '<span class="task-tag">' + escapeHtml(t.name) + '</span>').join('')}${g.tasks.length > 3 ? '<span class="task-tag">+' + (g.tasks.length - 3) + '</span>' : ''}</div></div>`; }); html += '</div>'; }
+        /* === ПРОГРЕСС И СТАТИСТИКА === */
+        html += `<div class="section-header stagger-item" style="margin-top:28px"><span class="section-title">Прогресс</span></div><div class="hero-progress stagger-item"><div class="progress-ring-container"><div class="progress-ring-glow"></div><svg class="progress-ring" viewBox="0 0 170 170"><circle class="progress-ring-bg" cx="85" cy="85" r="75"/><circle class="progress-ring-fill" cx="85" cy="85" r="75" data-percent="${overall}"/></svg><div class="progress-ring-text"><div class="progress-ring-value" data-counter="${overall}">0</div><div class="progress-ring-label">прогресс</div></div></div></div><div class="bento-grid"><div class="bento-card stagger-item" style="--card-gradient:var(--gradient-fire);--value-color:var(--accent)"><div class="bento-icon">📅</div><div class="bento-value">${todayDone}/${todayTotal}</div><div class="bento-label">Сегодня</div></div><div class="bento-card stagger-item" style="--card-gradient:var(--gradient-forest);--value-color:var(--emerald)"><div class="bento-icon">📊</div><div class="bento-value" data-counter="${weeklyScore}">0</div><div class="bento-label">Неделя ${w.current}</div></div><div class="bento-card stagger-item" style="--card-gradient:var(--gradient-ocean);--value-color:var(--amber)"><div class="bento-icon">⏳</div><div class="bento-value" data-counter="${daysLeft}">0</div><div class="bento-label">Дней осталось</div></div><div class="bento-card stagger-item" style="--card-gradient:var(--gradient-fire);--value-color:var(--accent)"><div class="bento-icon">🎯</div><div class="bento-value">${s.goals.length}</div><div class="bento-label">Целей</div></div></div>`; 
+        /* === ГРАФИК НЕДЕЛИ === */
+        if (s.goals.length > 0) { const start = new Date(s.startDate); const weekStart = new Date(start); weekStart.setDate(start.getDate() + (w.current - 1) * 7); const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6); let weekTotal = 0, weekDone = 0; s.goals.forEach(g => g.tasks.forEach(t => { for (let d = new Date(weekStart); d <= weekEnd && d <= new Date(); d.setDate(d.getDate() + 1)) { const ds = d.toISOString().split('T')[0], dow = d.getDay(); let shouldDo = t.frequency === 'daily' || (t.frequency === 'workdays' && dow >= 1 && dow <= 5) || (t.frequency === 'weekly' && dow === 1) || (t.frequency === 'twice-week' && (dow === 1 || dow === 4)) || (t.frequency === 'three-week' && (dow === 1 || dow === 3 || dow === 5)); if (shouldDo) { weekTotal++; if (s.completions[t.id + '_' + ds]) weekDone++; } } })); html += `<div class="weekly-chart-card stagger-item"><div class="weekly-chart-header"><div><div class="weekly-chart-title">Прогресс по неделям</div><div class="weekly-chart-value" data-counter="${weeklyScore}">0<span style="font-size:20px;color:var(--text-muted)">%</span></div><div style="font-size:12px;color:var(--text-muted);margin-top:4px">Неделя ${w.current}: ${weekDone} из ${weekTotal} задач</div></div>${scoreDiff !== 0 ? `<div class="weekly-chart-change" style="${scoreDiff < 0 ? 'background:var(--rose-dim);color:var(--rose)' : ''}">${scoreDiff > 0 ? '↑' : '↓'} ${Math.abs(scoreDiff)}%</div>` : ''}</div><div class="trend-chart">${renderTrendLine(trendData)}</div></div>`; } 
+        /* === ИНФО О СПРИНТЕ === */
+        html += `<div class="sprint-info stagger-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="font-weight:700;font-size:15px">${escapeHtml(s.name)}</div><span class="status-badge ${expired ? 'expired' : 'active'}"><span class="status-dot"></span>${expired ? 'Завершён' : 'Активный'}</span></div><div class="sprint-dates"><div class="sprint-date"><div class="sprint-date-label">Старт</div><div class="sprint-date-value">${formatDate(s.startDate)}</div></div><div class="sprint-arrow">→</div><div class="sprint-date"><div class="sprint-date-label">Финиш</div><div class="sprint-date-value">${formatDate(s.endDate)}</div></div></div></div>`; html += '</div>'; return html; }
+        /* === Quick Toggle Task (для главного экрана) === */
+        function quickToggleTask(taskId, date) { const s = getCurrentSprint(); if (!s) return; const key = taskId + '_' + date; const wasDone = s.completions[key]; if (wasDone) { delete s.completions[key]; haptic('light'); SoundFX.tap(); } else { s.completions[key] = true; haptic('medium'); SoundFX.complete(); const todayTasks = []; const dow = new Date().getDay(); s.goals.forEach(g => g.tasks.forEach(t => { let shouldDo = t.frequency === 'daily' || (t.frequency === 'workdays' && dow >= 1 && dow <= 5) || (t.frequency === 'weekly' && dow === 1) || (t.frequency === 'twice-week' && (dow === 1 || dow === 4)) || (t.frequency === 'three-week' && (dow === 1 || dow === 3 || dow === 5)); if (shouldDo) todayTasks.push({ id: t.id, done: !!s.completions[t.id + '_' + date] }); })); const allDone = todayTasks.every(t => t.done || t.id === taskId); if (allDone && todayTasks.length > 0) { setTimeout(() => { launchConfetti(); showToast('🎉 Все задачи на сегодня выполнены!', 'success'); }, 300); } } saveState(); render(); }
+        function renderTrendLine(data) { if (!data.length) return '<div style="height:100px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">Нет данных</div>'; const maxVal = Math.max(...data, 100); return `<div class="bar-chart">${data.map((v, i) => { const height = Math.max((v / maxVal) * 100, 8); const isLast = i === data.length - 1; return `<div class="bar-column" style="animation-delay:${i * 0.1}s"><div class="bar-value">${v}%</div><div class="bar-track"><div class="bar-fill ${isLast ? 'current' : ''}" style="height:${height}%"></div></div><div class="bar-label">W${i + 1}</div></div>`; }).join('')}</div>`; }
+        function renderGoalDetail() { const s = getCurrentSprint(), g = s?.goals.find(x => x.id === selectedGoal); if (!g) return ''; const p = getProgress(g), today = getToday(), dow = new Date().getDay(), icon = g.icon || '🎯', expired = isSprintExpired(s); const goalIdx = s.goals.findIndex(x => x.id === selectedGoal); const accentColor = ACCENT_COLORS[goalIdx % ACCENT_COLORS.length]; const todayTasks = g.tasks.filter(t => t.frequency === 'daily' || (t.frequency === 'workdays' && dow >= 1 && dow <= 5) || (t.frequency === 'weekly' && dow === 1) || (t.frequency === 'twice-week' && (dow === 1 || dow === 4)) || (t.frequency === 'three-week' && (dow === 1 || dow === 3 || dow === 5))); let totalTasks = 0, totalDone = 0; g.tasks.forEach(t => { totalTasks += getTaskTotal(t.frequency); totalDone += getTaskDone(t.id); }); let html = `<div class="page-container"><div class="detail-header"><button class="back-btn" onclick="haptic('light'); closeGoal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Назад</button><div class="detail-title">${icon} ${escapeHtml(g.title)}</div><div class="progress-ring-container" style="margin-bottom:20px"><div class="progress-ring-glow"></div><svg class="progress-ring" viewBox="0 0 170 170"><circle class="progress-ring-bg" cx="85" cy="85" r="75"/><circle class="progress-ring-fill" cx="85" cy="85" r="75" data-percent="${p}" style="stroke:${accentColor}"/></svg><div class="progress-ring-text"><div class="progress-ring-value" data-counter="${p}">0</div><div class="progress-ring-label">выполнено</div></div></div><div class="detail-stats"><div class="detail-stat stagger-item"><div class="detail-stat-value text-emerald" data-counter="${totalDone}">0</div><div class="detail-stat-label">Сделано</div></div><div class="detail-stat stagger-item"><div class="detail-stat-value text-accent" data-counter="${totalTasks}">0</div><div class="detail-stat-label">Всего</div></div><div class="detail-stat stagger-item"><div class="detail-stat-value text-amber" data-counter="${totalTasks - totalDone}">0</div><div class="detail-stat-label">Осталось</div></div></div>`; if (!expired) html += `<div class="detail-actions"><button class="action-btn stagger-item" onclick="haptic('light'); editGoal('${g.id}')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Изменить</button><button class="action-btn danger stagger-item" onclick="deleteGoal('${g.id}', event)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Удалить</button></div>`; html += '</div><div class="task-section">'; if (!expired) { html += '<div class="section-header"><span class="section-title">На сегодня</span></div>'; if (todayTasks.length === 0) html += '<div style="text-align:center;padding:30px;color:var(--text-muted)">Нет задач на сегодня 🎉</div>'; else todayTasks.forEach((t, i) => { const isDone = s.completions[t.id + '_' + today]; html += `<div class="task-item stagger-item ${isDone ? 'completed' : ''}" style="animation-delay:${i * 0.05}s"><button class="task-checkbox ${isDone ? 'checked' : ''}" onclick="event.stopPropagation(); toggleTask('${t.id}', '${today}', true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="task-info"><div class="task-name">${escapeHtml(t.name)}</div><div class="task-freq">${FREQ[t.frequency]?.label || ''}</div></div></div>`; }); } html += '<div class="section-header" style="margin-top:24px"><span class="section-title">Все действия</span></div>'; g.tasks.forEach((t, i) => { const done = getTaskDone(t.id); html += `<div class="task-item stagger-item" style="animation-delay:${i * 0.05}s" onclick="haptic('light'); openTaskTracker('${g.id}', '${t.id}')"><div class="task-info"><div class="task-name">${escapeHtml(t.name)}</div><div class="task-freq">${FREQ[t.frequency]?.label || ''}</div></div><div class="task-streak">🔥 ${done}</div></div>`; }); html += '</div></div>'; return html; }
+        function renderTaskTracker() { const s = getCurrentSprint(), g = s?.goals.find(x => x.id === selectedTask.goalId), t = g?.tasks.find(x => x.id === selectedTask.taskId); if (!g || !t) return ''; const total = getTaskTotal(t.frequency), done = getTaskDone(t.id), sprintDays = getSprintDays(); const startDate = new Date(s.startDate), dates = []; for (let i = 0; i < sprintDays; i++) { const d = new Date(startDate); d.setDate(startDate.getDate() + i); dates.push(d.toISOString().split('T')[0]); } const today = getToday(), progress = total > 0 ? Math.round(done / total * 100) : 0; let html = `<div class="page-container"><div class="detail-header"><button class="back-btn" onclick="haptic('light'); closeTaskTracker()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Назад</button><div class="detail-title">${escapeHtml(t.name)}</div><div style="color:var(--text-muted);font-size:14px;margin-bottom:20px;position:relative;z-index:1">${escapeHtml(g.title)}</div><div class="progress-ring-container" style="margin-bottom:20px"><div class="progress-ring-glow"></div><svg class="progress-ring" viewBox="0 0 170 170"><circle class="progress-ring-bg" cx="85" cy="85" r="75"/><circle class="progress-ring-fill" cx="85" cy="85" r="75" data-percent="${progress}"/></svg><div class="progress-ring-text"><div class="progress-ring-value" data-counter="${progress}">0</div><div class="progress-ring-label">готово</div></div></div><div class="detail-stats"><div class="detail-stat stagger-item"><div class="detail-stat-value text-emerald" data-counter="${done}">0</div><div class="detail-stat-label">Сделано</div></div><div class="detail-stat stagger-item"><div class="detail-stat-value text-accent" data-counter="${total}">0</div><div class="detail-stat-label">Всего</div></div><div class="detail-stat stagger-item"><div class="detail-stat-value text-amber" data-counter="${total - done}">0</div><div class="detail-stat-label">Осталось</div></div></div></div><div class="task-section"><div class="section-header"><span class="section-title">📊 Визуальный прогресс</span></div><div class="analytics-card"><div class="tracker-grid">`; for (let i = 0; i < total; i++) { const isDone = i < done; html += `<div class="tracker-cell ${isDone ? 'done' : ''}" style="animation-delay:${i * 0.02}s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`; } html += `</div></div><div class="section-header" style="margin-top:24px"><span class="section-title">📅 Календарь</span></div><div class="analytics-card"><div class="heatmap">`; dates.forEach((d, i) => { const isDone = s.completions[t.id + '_' + d], isPast = d < today; html += `<div class="heatmap-cell ${isDone ? 'done' : (isPast ? 'missed' : '')}" onclick="toggleTask('${t.id}', '${d}')" title="${formatDate(d)}" style="animation-delay:${i * 0.01}s"></div>`; }); html += '</div><div class="heatmap-legend"><span>Пропуск</span><div class="heatmap-legend-item" style="background:var(--rose-dim)"></div><div class="heatmap-legend-item" style="background:var(--emerald)"></div><span>Сделано</span></div></div></div></div>'; return html; }
+        function renderAnalytics() { const s = getCurrentSprint(); if (!s?.goals?.length) return '<div class="page-container page-fade"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">Нет данных</div><div class="empty-text">Создай цели, чтобы видеть аналитику</div></div></div>'; const trendData = getTrendData(); const w = getCurrentWeek(); let html = `<div class="page-container"><div class="section-header stagger-item"><span class="section-title">📈 Прогресс по неделям</span></div><div class="weekly-chart-card stagger-item"><div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">Каждый столбик показывает % выполненных задач за неделю</div><div class="trend-chart" style="height:140px">${renderTrendLine(trendData)}</div></div><div class="section-header stagger-item" style="margin-top:24px"><span class="section-title">Прогресс по целям</span></div>`; s.goals.forEach((g, idx) => { const p = getProgress(g), icon = g.icon || ICONS[idx % ICONS.length], gradient = GRADIENTS[idx % GRADIENTS.length], accentColor = ACCENT_COLORS[idx % ACCENT_COLORS.length]; html += `<div class="analytics-card stagger-item" style="position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:60px;background:var(--${gradient.replace('gradient-', 'gradient-')});opacity:0.4;filter:blur(30px)"></div><div class="analytics-title" style="position:relative;z-index:1"><span>${icon}</span>${escapeHtml(g.title)}</div><div class="mini-progress-container" style="width:100px;height:100px;margin:0 auto 16px;position:relative;z-index:1"><svg viewBox="0 0 100 100" style="width:100px;height:100px;transform:rotate(-90deg)"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--bg-primary)" stroke-width="8"/><circle cx="50" cy="50" r="42" fill="none" stroke="${accentColor}" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="${264 - (264 * p / 100)}" style="transition:stroke-dashoffset 1s var(--ease-out);filter:drop-shadow(0 0 10px ${accentColor})"/></svg><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center"><div style="font-size:28px;font-weight:800" data-counter="${p}">0</div><div style="font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase">%</div></div></div>`; g.tasks.forEach(t => { const total = getTaskTotal(t.frequency), done = getTaskDone(t.id), tp = total > 0 ? Math.round(done / total * 100) : 0; html += `<div class="task-item" onclick="haptic('light'); openTaskTracker('${g.id}', '${t.id}')" style="margin-bottom:8px;position:relative;z-index:1"><div class="task-info"><div class="task-name">${escapeHtml(t.name)}</div><div class="task-freq">${done} из ${total} • ${tp}%</div></div><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>`; }); html += '</div>'; }); html += '</div>'; return html; }
+        function renderArchive() { let html = '<div class="page-container"><div class="section-header stagger-item"><span class="section-title">📦 Архив спринтов</span></div>'; if (state.archivedSprints.length === 0) html += '<div class="empty-state stagger-item"><div class="empty-icon" style="background:var(--accent-dim)">📦</div><div class="empty-title">Архив пуст</div><div class="empty-text">Завершённые спринты будут храниться здесь</div></div>'; else { state.archivedSprints.forEach((s, i) => { const score = s.finalScore || calculateSprintScore(s), completed = s.totalTasksCompleted || countCompletedTasks(s), goalsCount = s.goals?.length || 0; html += `<div class="archive-card stagger-item" style="animation-delay:${i * 0.1}s" onclick="haptic('light'); openArchiveDetail('${s.id}')"><div class="archive-header"><div><div class="archive-name">${escapeHtml(s.name)}</div><div class="archive-dates">${formatDate(s.startDate)} — ${formatDate(s.endDate)}</div></div><div class="archive-score">${score}%</div></div><div class="archive-stats"><div class="archive-stat"><div class="archive-stat-value">${goalsCount}</div><div class="archive-stat-label">Целей</div></div><div class="archive-stat"><div class="archive-stat-value">${completed}</div><div class="archive-stat-label">Выполнено</div></div><div class="archive-stat"><div class="archive-stat-value">${s.reviews?.length || 0}</div><div class="archive-stat-label">Отчётов</div></div></div></div>`; }); if (state.archivedSprints.length > 0) { const total = state.archivedSprints.length, avg = Math.round(state.archivedSprints.reduce((sum, s) => sum + (s.finalScore || calculateSprintScore(s)), 0) / total); html += `<div class="analytics-card stagger-item" style="margin-top:24px"><div class="analytics-title"><span>📈</span>Общая статистика</div><div class="bento-grid" style="margin-bottom:0"><div class="bento-card" style="--value-color:var(--accent)"><div class="bento-value" data-counter="${total}">0</div><div class="bento-label">Спринтов</div></div><div class="bento-card" style="--value-color:var(--emerald)"><div class="bento-value" data-counter="${avg}">0</div><div class="bento-label">Средний %</div></div></div></div>`; } } html += '</div>'; return html; }
+        function renderArchiveDetail() { const s = state.archivedSprints.find(x => x.id === selectedArchive); if (!s) return ''; const score = s.finalScore || calculateSprintScore(s), completed = s.totalTasksCompleted || countCompletedTasks(s), total = s.totalTasks || countTotalTasks(s), sprintDays = getSprintDaysForSprint(s); let html = `<div class="page-container"><button class="back-btn" style="padding:20px 20px 0" onclick="haptic('light'); closeArchiveDetail()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Архив</button><div class="archive-detail-header"><div class="archive-detail-badge">Архив</div><div class="archive-detail-name">${escapeHtml(s.name)}</div><div class="archive-detail-dates">${formatDateFull(s.startDate)} — ${formatDateFull(s.endDate)}</div></div><div style="padding:0 20px"><div class="progress-ring-container stagger-item"><div class="progress-ring-glow"></div><svg class="progress-ring" viewBox="0 0 170 170"><circle class="progress-ring-bg" cx="85" cy="85" r="75"/><circle class="progress-ring-fill" cx="85" cy="85" r="75" data-percent="${score}" style="stroke:url(#violetGradient)"/></svg><div class="progress-ring-text"><div class="progress-ring-value" style="color:var(--accent)" data-counter="${score}">0</div><div class="progress-ring-label">финал</div></div></div><div class="bento-grid"><div class="bento-card stagger-item" style="--value-color:var(--emerald)"><div class="bento-value" data-counter="${completed}">0</div><div class="bento-label">Выполнено</div></div><div class="bento-card stagger-item" style="--value-color:var(--accent)"><div class="bento-value" data-counter="${sprintDays}">0</div><div class="bento-label">Дней</div></div></div><div class="section-header stagger-item" style="margin-top:24px"><span class="section-title">Цели спринта</span></div>`; if (s.goals?.length > 0) s.goals.forEach((g, idx) => { const icon = g.icon || ICONS[idx % ICONS.length], gradient = GRADIENTS[idx % GRADIENTS.length]; let gDone = 0, gTotal = 0; g.tasks.forEach(t => { const f = FREQ[t.frequency]; if (f) { gTotal += Math.round(f.total * sprintDays / 84); Object.keys(s.completions || {}).forEach(k => { if (k.startsWith(t.id + '_') && s.completions[k]) gDone++; }); } }); const gp = gTotal > 0 ? Math.round(gDone / gTotal * 100) : 0; html += `<div class="goal-card ${gradient} stagger-item" style="cursor:default"><div class="goal-header"><div class="goal-icon">${icon}</div><div class="goal-info"><div class="goal-title">${escapeHtml(g.title)}</div><div class="goal-subtitle">${g.tasks.length} действий • ${gDone}/${gTotal}</div></div><div class="mini-ring-container"><svg class="mini-ring" viewBox="0 0 58 58"><circle class="mini-ring-bg" cx="29" cy="29" r="25"/><circle class="mini-ring-fill" cx="29" cy="29" r="25" data-percent="${gp}" style="stroke:var(--accent)"/></svg><div class="mini-ring-text" style="color:var(--accent)">${gp}%</div></div></div></div>`; }); else html += '<div style="text-align:center;padding:30px;color:var(--text-muted)">Нет целей</div>'; if (s.reviews?.length > 0) { html += '<div class="section-header stagger-item" style="margin-top:24px"><span class="section-title">Еженедельные отчёты</span></div>'; [...s.reviews].sort((a, b) => b.week - a.week).forEach((r, i) => { html += `<div class="review-card stagger-item" style="animation-delay:${i * 0.05}s"><div class="review-header"><span class="review-week">📅 Неделя ${r.week}</span><span class="review-score">${r.score}%</span></div>${r.wins ? '<div class="review-section"><div class="review-question">🏆 Победы</div><div class="review-answer">' + escapeHtml(r.wins) + '</div></div>' : ''}${r.growth ? '<div class="review-section"><div class="review-question">🎯 Точки роста</div><div class="review-answer">' + escapeHtml(r.growth) + '</div></div>' : ''}</div>`; }); } html += `<div style="margin-top:32px" class="stagger-item"><button class="btn btn-danger" style="width:100%" onclick="haptic('medium'); deleteFromArchive('${s.id}')">Удалить из архива</button></div></div></div>`; return html; }
+        function renderReview() { const s = getCurrentSprint(); if (!s) return '<div class="page-container page-fade"><div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">Нет спринта</div><div class="empty-text">Создай спринт</div></div></div>'; const w = getCurrentWeek(), currentReview = s.reviews?.find(r => r.week === w.current), weeklyScore = getWeeklyScore(w.current), overall = s.goals.length > 0 ? Math.round(s.goals.reduce((a, g) => a + getProgress(g), 0) / s.goals.length) : 0; let html = `<div class="page-container"><div class="section-header stagger-item"><span class="section-title">Еженедельная рефлексия</span></div><div class="analytics-card stagger-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div><div style="font-size:20px;font-weight:700;margin-bottom:4px">Неделя ${w.current}</div><div style="font-size:13px;color:var(--text-muted)">${currentReview ? '✓ Отчёт заполнен' : 'Отчёт не заполнен'}</div></div><button class="btn btn-primary" style="flex:none;padding:12px 20px" onclick="haptic('light'); openReviewModal()">${currentReview ? 'Изменить' : 'Заполнить'}</button></div><div class="detail-stats"><div class="detail-stat"><div class="detail-stat-value text-accent" data-counter="${weeklyScore}">0</div><div class="detail-stat-label">Weekly</div></div><div class="detail-stat"><div class="detail-stat-value text-emerald" data-counter="${overall}">0</div><div class="detail-stat-label">Общий</div></div><div class="detail-stat"><div class="detail-stat-value text-amber">${s.reviews?.length || 0}</div><div class="detail-stat-label">Отчётов</div></div></div></div><div class="section-header stagger-item" style="margin-top:24px"><span class="section-title">История</span></div>`; if (!s.reviews?.length) html += '<div style="text-align:center;padding:40px;color:var(--text-muted)" class="stagger-item">Нет отчётов</div>'; else [...s.reviews].sort((a, b) => b.week - a.week).forEach((r, i) => { html += `<div class="review-card stagger-item" style="animation-delay:${i * 0.05}s"><div class="review-header"><span class="review-week">📅 Неделя ${r.week}</span><span class="review-score">${r.score}%</span></div>${r.energy ? '<div class="review-section"><div class="review-question">⚡ Слив энергии</div><div class="review-answer">' + escapeHtml(r.energy) + '</div></div>' : ''}${r.blocker ? '<div class="review-section"><div class="review-question">🚧 Блокер</div><div class="review-answer">' + escapeHtml(r.blocker) + '</div></div>' : ''}${r.growth ? '<div class="review-section"><div class="review-question">🎯 Точки роста</div><div class="review-answer">' + escapeHtml(r.growth) + '</div></div>' : ''}${r.wins ? '<div class="review-section"><div class="review-question">🏆 Победы</div><div class="review-answer">' + escapeHtml(r.wins) + '</div></div>' : ''}</div>`; }); html += '</div>'; return html; }
+        function renderSettings() { const s = getCurrentSprint(); const soundOn = state.settings?.soundEnabled !== false; const vibrationOn = state.settings?.vibrationEnabled !== false; return `<div class="page-container"><div class="sprint-selector stagger-item"><div class="sprint-selector-header"><span class="sprint-selector-title">Активные спринты</span><button class="btn btn-primary" style="padding:10px 16px;font-size:12px" onclick="haptic('light'); SoundFX.tap(); openNewSprintModal()">+ Новый</button></div>${state.sprints.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted)">Нет активных спринтов</div>' : '<div class="sprint-list">' + state.sprints.map(sp => { const exp = isSprintExpired(sp); return `<div class="sprint-item ${sp.id === state.currentSprintId ? 'active' : ''}" onclick="haptic('light'); SoundFX.tap(); switchSprint('${sp.id}')"><div><div class="sprint-item-name">${escapeHtml(sp.name)}</div><div class="sprint-item-dates">${formatDate(sp.startDate)} — ${formatDate(sp.endDate)}</div></div><div style="display:flex;align-items:center;gap:8px">${exp ? '<span class="status-badge expired"><span class="status-dot"></span>Завершён</span>' : ''}${sp.id === state.currentSprintId ? '<span style="color:var(--accent)">✓</span>' : ''}</div></div>`; }).join('') + '</div>'}</div><div class="section-header stagger-item"><span class="section-title">🔊 Звук и вибрация</span></div><div class="settings-item stagger-item" onclick="toggleSetting('soundEnabled')"><div class="settings-icon" style="${soundOn ? '' : 'background:var(--bg-elevated);color:var(--text-muted)'}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">${soundOn ? '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>' : '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>'}</svg></div><div class="settings-content"><div class="settings-label">Звуки</div><div class="settings-desc">${soundOn ? 'Включены — приятные звуки при действиях' : 'Выключены'}</div></div><div class="toggle-switch ${soundOn ? 'active' : ''}"><div class="toggle-knob"></div></div></div><div class="settings-item stagger-item" onclick="toggleSetting('vibrationEnabled')"><div class="settings-icon" style="${vibrationOn ? '' : 'background:var(--bg-elevated);color:var(--text-muted)'}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>${vibrationOn ? '<path d="M1 9h2m18 0h2M1 15h2m18 0h2"/>' : ''}</svg></div><div class="settings-content"><div class="settings-label">Вибрация</div><div class="settings-desc">${vibrationOn ? 'Включена — тактильная отдача' : 'Выключена'}</div></div><div class="toggle-switch ${vibrationOn ? 'active' : ''}"><div class="toggle-knob"></div></div></div>${s ? `<div class="section-header stagger-item" style="margin-top:24px"><span class="section-title">Настройки спринта</span></div><div class="form-row stagger-item" style="margin-bottom:20px"><div class="form-group" style="margin-bottom:0"><label class="form-label">Дата старта</label><input type="date" class="form-input" value="${s.startDate}" onchange="updateSprintDate('start', this.value)"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Дата финиша</label><input type="date" class="form-input" value="${s.endDate}" onchange="updateSprintDate('end', this.value)"></div></div><div class="sprint-info stagger-item" style="margin-top:8px"><div style="text-align:center"><div style="font-size:42px;font-weight:800;color:var(--accent)" data-counter="${getSprintDays()}">0</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">Дней в спринте</div></div></div>${!isSprintExpired(s) ? `<div class="settings-item stagger-item" onclick="haptic('medium'); confirmArchiveSprint()"><div class="settings-icon violet"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg></div><div class="settings-content"><div class="settings-label">Завершить спринт</div><div class="settings-desc">Архивировать досрочно</div></div><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>` : ''}` : ''}<div class="section-header stagger-item" style="margin-top:28px"><span class="section-title">Данные</span></div><div class="settings-item stagger-item" onclick="haptic('light'); exportData()"><div class="settings-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="settings-content"><div class="settings-label">Экспорт данных</div><div class="settings-desc">Скачать бэкап в JSON</div></div><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div><div class="settings-item stagger-item" onclick="haptic('light'); importData()"><div class="settings-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="settings-content"><div class="settings-label">Импорт данных</div><div class="settings-desc">Загрузить из JSON</div></div><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div><div style="margin-top:50px;text-align:center;color:var(--text-muted)" class="stagger-item"><div style="font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--accent) 0%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">HUSTLE YEAR</div><div style="font-size:12px">v9.2 • Pure Orange Edition</div><div style="font-size:11px;margin-top:4px">📦 ${state.archivedSprints.length} спринтов в архиве</div></div></div>`; }
+        function switchTab(tab) { haptic('light'); if (tab === currentTab && !selectedGoal && !selectedTask && !selectedArchive) return; currentTab = tab; selectedGoal = null; selectedTask = null; selectedArchive = null; render(); }
+        function openGoal(id) { selectedGoal = id; render(); }
+        function closeGoal() { selectedGoal = null; render(); }
+        function openTaskTracker(goalId, taskId) { selectedTask = { goalId, taskId }; render(); }
+        function closeTaskTracker() { selectedTask = null; render(); }
+        function openArchiveDetail(id) { selectedArchive = id; render(); }
+        function closeArchiveDetail() { selectedArchive = null; render(); }
+        function toggleTask(taskId, date, withEffect = false) { const s = getCurrentSprint(); if (!s) return; const key = taskId + '_' + date, wasNotDone = !s.completions[key]; s.completions[key] = wasNotDone; saveState(); if (wasNotDone && withEffect) { haptic('success'); SoundFX.taskComplete(); showConfetti(); showSuccessRing(); setTimeout(() => checkDayCompletion(), 500); } else if (wasNotDone) { haptic('light'); SoundFX.taskComplete(); } else { haptic('light'); SoundFX.taskUndo(); } render(); }
+        function switchSprint(id) { state.currentSprintId = id; saveState(); render(); showToast('Спринт переключён'); }
+        function confirmArchiveSprint() { const s = getCurrentSprint(); if (!s) return; if (confirm('Завершить спринт "' + s.name + '" и отправить в архив?')) { archiveSprint(s.id); if (state.sprints.length === 0) openNewSprintModal(); else render(); } }
+        function deleteFromArchive(id) { if (confirm('Удалить этот спринт из архива?')) { state.archivedSprints = state.archivedSprints.filter(s => s.id !== id); saveState(); selectedArchive = null; render(); showToast('Удалено из архива'); } }
+        function updateSprintDate(type, value) { const s = getCurrentSprint(); if (!s) return; if (type === 'start') s.startDate = value; else s.endDate = value; saveState(); render(); showToast('Даты обновлены'); }
+        function openNewSprintModal() { const today = new Date(), end = new Date(today.getTime() + 84*86400000); document.getElementById('newSprintName').value = 'Спринт ' + (state.sprints.length + state.archivedSprints.length + 1); document.getElementById('newSprintStart').value = today.toISOString().split('T')[0]; document.getElementById('newSprintEnd').value = end.toISOString().split('T')[0]; updateNewSprintDays(); document.getElementById('newSprintModal').classList.add('show'); }
+        function closeNewSprintModal() { haptic('light'); document.getElementById('newSprintModal').classList.remove('show'); }
+        function updateNewSprintDays() { const s = new Date(document.getElementById('newSprintStart').value), e = new Date(document.getElementById('newSprintEnd').value); const d = Math.ceil((e - s) / 86400000); document.getElementById('newSprintDays').textContent = d > 0 ? d : 0; }
+        function createNewSprintFromModal() { haptic('medium'); SoundFX.achievement(); const name = document.getElementById('newSprintName').value.trim(), start = document.getElementById('newSprintStart').value, end = document.getElementById('newSprintEnd').value; if (!name) { showToast('Введи название спринта'); return; } if (new Date(end) <= new Date(start)) { showToast('Дата финиша должна быть позже старта'); return; } createNewSprint(name, start, end); closeNewSprintModal(); currentTab = 'home'; render(); showConfetti(); showToast('Новый спринт создан! 🚀', 'success'); }
+        function openCreateModal() { haptic('light'); editingGoalId = null; selectedIcon = '🎯'; document.getElementById('modalTitle').textContent = 'Новая цель'; document.getElementById('goalTitle').value = ''; document.getElementById('tasksList').innerHTML = ''; renderIconPicker(); addTaskField(); document.getElementById('createModal').classList.add('show'); }
+        function closeCreateModal() { haptic('light'); document.getElementById('createModal').classList.remove('show'); }
+        function renderIconPicker() { document.getElementById('iconPicker').innerHTML = ICONS.map(i => '<div class="icon-option ' + (i === selectedIcon ? 'selected' : '') + '" onclick="selectIcon(\'' + i + '\')">' + i + '</div>').join(''); }
+        function selectIcon(icon) { haptic('light'); selectedIcon = icon; document.querySelectorAll('.icon-option').forEach(el => el.classList.toggle('selected', el.textContent === icon)); }
+        function editGoal(id) { const s = getCurrentSprint(), g = s?.goals.find(x => x.id === id); if (!g) return; editingGoalId = id; selectedIcon = g.icon || '🎯'; document.getElementById('modalTitle').textContent = 'Редактировать'; document.getElementById('goalTitle').value = g.title; document.getElementById('tasksList').innerHTML = ''; renderIconPicker(); g.tasks.forEach(t => addTaskField(t.name, t.frequency, t.id)); selectedGoal = null; document.getElementById('createModal').classList.add('show'); }
+        function addTaskField(name = '', freq = 'daily', id = null) { const tid = id || genId(), div = document.createElement('div'); div.className = 'task-row'; div.id = 'task-' + tid; div.innerHTML = '<input type="text" class="form-input" placeholder="Действие" value="' + escapeHtml(name) + '" data-id="' + tid + '"><select class="form-input" data-id="' + tid + '"><option value="daily"' + (freq === 'daily' ? ' selected' : '') + '>Ежедневно</option><option value="workdays"' + (freq === 'workdays' ? ' selected' : '') + '>Будни</option><option value="weekly"' + (freq === 'weekly' ? ' selected' : '') + '>1×/нед</option><option value="twice-week"' + (freq === 'twice-week' ? ' selected' : '') + '>2×/нед</option><option value="three-week"' + (freq === 'three-week' ? ' selected' : '') + '>3×/нед</option></select><button class="icon-btn danger" onclick="removeTaskField(\'' + tid + '\', event)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'; document.getElementById('tasksList').appendChild(div); }
+        function removeTaskField(id, event) { if (event) { event.preventDefault(); event.stopPropagation(); } haptic('light'); const el = document.getElementById('task-' + id); if (el && document.querySelectorAll('.task-row').length > 1) { el.style.opacity = '0'; el.style.transform = 'translateX(-20px)'; setTimeout(() => el.remove(), 200); } else showToast('Нужно минимум 1 действие'); }
+        function saveGoal() { haptic('medium'); const s = getCurrentSprint(); if (!s) return; const title = document.getElementById('goalTitle').value.trim(); if (!title) { showToast('Введи название цели'); return; } const tasks = []; for (const row of document.querySelectorAll('.task-row')) { const input = row.querySelector('input'), select = row.querySelector('select'), name = input.value.trim(); if (!name) { showToast('Заполни все действия'); return; } tasks.push({ id: input.dataset.id, name, frequency: select.value }); } if (editingGoalId) { const idx = s.goals.findIndex(g => g.id === editingGoalId); if (idx >= 0) { s.goals[idx].title = title; s.goals[idx].icon = selectedIcon; s.goals[idx].tasks = tasks; } SoundFX.tap(); showToast('Цель обновлена', 'success'); } else { if (s.goals.length >= 3) { showToast('Максимум 3 цели!'); return; } s.goals.push({ id: genId(), title, icon: selectedIcon, tasks }); SoundFX.achievement(); showToast('Цель создана! 🎯', 'success'); } saveState(); closeCreateModal(); render(); }
+        function deleteGoal(id, event) { if (event) { event.preventDefault(); event.stopPropagation(); } haptic('medium'); const btn = document.querySelector('.action-btn.danger'); if (btn && !btn.classList.contains('confirm-delete')) { btn.classList.add('confirm-delete'); btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Точно?'; setTimeout(() => { if (btn) { btn.classList.remove('confirm-delete'); btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Удалить'; } }, 3000); return; } const s = getCurrentSprint(); if (s) { s.goals = s.goals.filter(g => g.id !== id); saveState(); } selectedGoal = null; showToast('Цель удалена'); render(); }
+        function openReviewModal() { const s = getCurrentSprint(), w = getCurrentWeek(), existing = s?.reviews?.find(r => r.week === w.current); document.getElementById('reviewWeekNum').textContent = w.current; document.getElementById('reviewScore').value = existing?.score || getWeeklyScore(w.current); document.getElementById('reviewEnergy').value = existing?.energy || ''; document.getElementById('reviewBlocker').value = existing?.blocker || ''; document.getElementById('reviewGrowth').value = existing?.growth || ''; document.getElementById('reviewWins').value = existing?.wins || ''; document.getElementById('reviewModal').classList.add('show'); }
+        function closeReviewModal() { haptic('light'); document.getElementById('reviewModal').classList.remove('show'); }
+        function saveReview() { haptic('medium'); SoundFX.achievement(); const s = getCurrentSprint(); if (!s) return; const w = getCurrentWeek(), score = parseInt(document.getElementById('reviewScore').value) || 0, energy = document.getElementById('reviewEnergy').value.trim(), blocker = document.getElementById('reviewBlocker').value.trim(), growth = document.getElementById('reviewGrowth').value.trim(), wins = document.getElementById('reviewWins').value.trim(); if (!s.reviews) s.reviews = []; const idx = s.reviews.findIndex(r => r.week === w.current), review = { week: w.current, score, energy, blocker, growth, wins }; if (idx >= 0) s.reviews[idx] = review; else s.reviews.push(review); saveState(); closeReviewModal(); showToast('Отчёт сохранён! 📝', 'success'); render(); }
+        function exportData() { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'hustle-year-backup.json'; a.click(); URL.revokeObjectURL(a.href); showToast('Данные экспортированы! 💾', 'success'); }
+        function toggleSetting(setting) { if (!state.settings) state.settings = { soundEnabled: true, vibrationEnabled: true }; const currentValue = state.settings[setting] !== false; state.settings[setting] = !currentValue; saveState(); if (setting === 'soundEnabled' && state.settings.soundEnabled) { setTimeout(() => SoundFX.tap(), 100); } if (setting === 'vibrationEnabled' && state.settings.vibrationEnabled) { setTimeout(() => haptic('medium'), 100); } render(); showToast(state.settings[setting] ? 'Включено ✓' : 'Выключено'); }
+        function importData() { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = e => { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = event => { try { const data = JSON.parse(event.target.result); if (!data.archivedSprints) data.archivedSprints = []; state = data; saveState(); render(); showToast('Данные импортированы! ✨', 'success'); } catch(err) { showToast('Ошибка импорта'); } }; reader.readAsText(file); }; input.click(); }
+        loadState();
+        initParallax();
+        initPullToRefresh();
+        document.addEventListener('touchstart', function initAudioOnTouch() { initAudio(); document.removeEventListener('touchstart', initAudioOnTouch); }, { once: true });
+        document.addEventListener('click', function initAudioOnClick() { initAudio(); document.removeEventListener('click', initAudioOnClick); }, { once: true });
+        
+        // === SERVICE WORKER для оффлайн ===
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => {
+                        console.log('✅ Service Worker зарегистрирован');
+                        // Проверяем обновления
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Новая версия доступна
+                                    if (confirm('🔄 Доступно обновление! Перезагрузить?')) {
+                                        newWorker.postMessage('skipWaiting');
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.log('SW ошибка:', err));
+            });
+        }
+        
+        // === DESKTOP: Горячие клавиши ===
+        document.addEventListener('keydown', (e) => {
+            // Игнорируем если фокус в input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            // Cmd/Ctrl + N — новая цель
+            if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+                e.preventDefault();
+                openCreateModal();
+                return;
+            }
+            
+            // Цифры 1-5 для навигации
+            const tabs = ['home', 'analytics', 'archive', 'review', 'settings'];
+            if (e.key >= '1' && e.key <= '5') {
+                e.preventDefault();
+                switchTab(tabs[parseInt(e.key) - 1]);
+            }
+            
+            // Escape — закрыть модалки
+            if (e.key === 'Escape') {
+                closeCreateModal();
+                closeNewSprintModal();
+                closeReviewModal();
+                closeCelebration();
+                closeSprintComplete();
+            }
+        });
+        
+        // === DESKTOP: Синхронизация sidebar ===
+        const originalSwitchTab = switchTab;
+        switchTab = function(tab) {
+            originalSwitchTab(tab);
+            // Обновляем активный элемент в sidebar
+            document.querySelectorAll('.sidebar-item').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+        };
+        
+        // Обновляем weekNum в sidebar при рендере
+        const originalRender = render;
+        render = function() {
+            originalRender();
+            const s = getCurrentSprint();
+            const w = s ? getCurrentWeek() : { current: 0, total: 0 };
+            const sidebarWeek = document.getElementById('weekNumSidebar');
+            if (sidebarWeek) sidebarWeek.textContent = w.current + '/' + w.total;
+        };
+    </script>
+</body>
+</html>
